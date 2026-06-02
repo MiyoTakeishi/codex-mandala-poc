@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "codex-mandala-poc",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
