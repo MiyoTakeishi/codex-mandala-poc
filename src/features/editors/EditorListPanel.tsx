@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 
 import { addEditor } from "./addEditor";
+import { removeEditor } from "./removeEditor";
 import { useChartEditors } from "./useChartEditors";
 
 type EditorListPanelProps = {
@@ -39,11 +40,16 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
   const [addSuccess, setAddSuccess] = useState<string | null>(null);
+  const [removingEditorId, setRemovingEditorId] = useState<string | null>(null);
+  const [removeError, setRemoveError] = useState<string | null>(null);
+  const [removeSuccess, setRemoveSuccess] = useState<string | null>(null);
 
   const handleAddEditor = async () => {
     setIsAdding(true);
     setAddError(null);
     setAddSuccess(null);
+    setRemoveError(null);
+    setRemoveSuccess(null);
 
     try {
       const editorId = await addEditor(chartId, email);
@@ -58,6 +64,28 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
       );
     } finally {
       setIsAdding(false);
+    }
+  };
+
+  const handleRemoveEditor = async (targetEmail: string) => {
+    setRemovingEditorId(targetEmail);
+    setAddError(null);
+    setAddSuccess(null);
+    setRemoveError(null);
+    setRemoveSuccess(null);
+
+    try {
+      const editorId = await removeEditor(chartId, targetEmail);
+      setRemoveSuccess(`${editorId} を編集者から削除しました。`);
+      await reload();
+    } catch (error) {
+      setRemoveError(
+        error instanceof Error
+          ? error.message
+          : "編集者の削除に失敗しました。",
+      );
+    } finally {
+      setRemovingEditorId(null);
     }
   };
 
@@ -105,6 +133,20 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
           </Alert>
         ) : null}
 
+        {removeSuccess ? (
+          <Alert status="success" borderRadius="md">
+            <AlertIcon />
+            <AlertDescription>{removeSuccess}</AlertDescription>
+          </Alert>
+        ) : null}
+
+        {removeError ? (
+          <Alert status="error" borderRadius="md">
+            <AlertIcon />
+            <AlertDescription>{removeError}</AlertDescription>
+          </Alert>
+        ) : null}
+
         {isLoading ? (
           <HStack color="gray.600">
             <Spinner size="sm" />
@@ -129,12 +171,27 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
                 borderRadius="md"
                 p={3}
               >
-                <Text fontSize="sm" fontWeight="semibold">
-                  {editor.allowedEmail}
-                </Text>
-                <Text color="gray.500" fontSize="xs" mt={1}>
-                  追加日時: {formatCreatedAt(editor.createdAt?.seconds)}
-                </Text>
+                <HStack justify="space-between" align="start" spacing={3}>
+                  <Box minW={0}>
+                    <Text fontSize="sm" fontWeight="semibold" wordBreak="break-all">
+                      {editor.allowedEmail}
+                    </Text>
+                    <Text color="gray.500" fontSize="xs" mt={1}>
+                      追加日時: {formatCreatedAt(editor.createdAt?.seconds)}
+                    </Text>
+                  </Box>
+                  <Button
+                    colorScheme="red"
+                    flexShrink={0}
+                    isLoading={removingEditorId === editor.id}
+                    loadingText="削除中"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => void handleRemoveEditor(editor.allowedEmail)}
+                  >
+                    削除
+                  </Button>
+                </HStack>
               </Box>
             ))}
           </VStack>
