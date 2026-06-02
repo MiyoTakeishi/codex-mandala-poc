@@ -2,8 +2,161 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function hasAuthEmail() {
+      return isSignedIn() && request.auth.token.email is string;
+    }
+
+    function authEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function chartPath(chartId) {
+      return /databases/$(database)/documents/charts/$(chartId);
+    }
+
+    function chartExists(chartId) {
+      return exists(chartPath(chartId));
+    }
+
+    function chartData(chartId) {
+      return get(chartPath(chartId)).data;
+    }
+
+    function isActiveChartData(data) {
+      return data.isDeleted == false;
+    }
+
+    function isActiveChart(chartId) {
+      return chartExists(chartId) && isActiveChartData(chartData(chartId));
+    }
+
+    function isChartOwner(chartId) {
+      return isSignedIn()
+        && isActiveChart(chartId)
+        && chartData(chartId).ownerUid == request.auth.uid;
+    }
+
+    function isChartEditor(chartId) {
+      return hasAuthEmail()
+        && isActiveChart(chartId)
+        && exists(/databases/$(database)/documents/charts/$(chartId)/editors/$(authEmail()));
+    }
+
+    function isPublicSharedChartData(data) {
+      return isActiveChartData(data) && data.inviteToken is string;
+    }
+
+    function isPublicSharedChart(chartId) {
+      return isActiveChart(chartId) && chartData(chartId).inviteToken is string;
+    }
+
+    function isNullableString(value) {
+      return value == null || value is string;
+    }
+
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow get: if isSignedIn() && request.auth.uid == uid;
+      allow list: if false;
+
+      allow create: if isSignedIn()
+        && request.auth.uid == uid
+        && hasAuthEmail()
+        && request.resource.data.keys().hasOnly([
+          "uid",
+          "email",
+          "displayName",
+          "photoURL",
+          "createdAt",
+          "updatedAt"
+        ])
+        && request.resource.data.keys().hasAll([
+          "uid",
+          "email",
+          "createdAt",
+          "updatedAt"
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == authEmail()
+        && isNullableString(request.resource.data.displayName)
+        && isNullableString(request.resource.data.photoURL)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if isSignedIn()
+        && request.auth.uid == uid
+        && hasAuthEmail()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "email",
+          "displayName",
+          "photoURL",
+          "updatedAt"
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == authEmail()
+        && isNullableString(request.resource.data.displayName)
+        && isNullableString(request.resource.data.photoURL)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if false;
+    }
+
+    match /charts/{chartId} {
+      allow get: if isChartOwner(chartId)
+        || isChartEditor(chartId)
+        || isPublicSharedChartData(resource.data);
+
+      allow list: if isSignedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && resource.data.isDeleted == false;
+
+      allow create: if false;
+
+      allow update: if isChartOwner(chartId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "title",
+          "updatedAt"
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if false;
+
+      match /cells/{cellId} {
+        allow read: if isChartOwner(chartId)
+          || isChartEditor(chartId)
+          || isPublicSharedChart(chartId);
+
+        allow create: if false;
+
+        allow update: if (isChartOwner(chartId) || isChartEditor(chartId))
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            "body",
+            "updatedByUid",
+            "updatedAt"
+          ])
+          && request.resource.data.body is string
+          && request.resource.data.updatedByUid == request.auth.uid
+          && request.resource.data.updatedAt == request.time;
+
+        allow delete: if false;
+      }
+
+      match /editors/{editorId} {
+        allow read: if isChartOwner(chartId);
+        allow write: if false;
+      }
+    }
+
+    match /inviteLinks/{token} {
+      allow get: if resource.data.chartId is string
+        && isActiveChart(resource.data.chartId);
+      allow list: if false;
+      allow write: if false;
     }
 
     match /{document=**} {
