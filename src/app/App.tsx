@@ -60,6 +60,12 @@ function OwnerHomePage() {
     }
   };
 
+  const handleDeletedChart = (chartId: string) => {
+    if (selectedChartId === chartId) {
+      setSelectedChartId(null);
+    }
+  };
+
   return (
     <Box minH="100vh" bg="gray.50" color="gray.900">
       <Container maxW="6xl" py={{ base: 8, md: 12 }}>
@@ -159,6 +165,7 @@ function OwnerHomePage() {
             ownerUid={currentUser?.uid}
             selectedChartId={selectedChartId}
             onOpenChart={setSelectedChartId}
+            onDeletedChart={handleDeletedChart}
           />
           <OwnerChartDetail
             chartId={selectedChartId}

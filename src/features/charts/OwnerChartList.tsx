@@ -11,13 +11,16 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
+import { deleteChart } from "./deleteChart";
 import { useOwnerCharts } from "./useOwnerCharts";
 
 type OwnerChartListProps = {
   ownerUid: string | undefined;
   selectedChartId: string | null;
   onOpenChart: (chartId: string) => void;
+  onDeletedChart: (chartId: string) => void;
 };
 
 function formatUpdatedAt(seconds: number | undefined) {
@@ -32,11 +35,43 @@ function formatUpdatedAt(seconds: number | undefined) {
 }
 
 export function OwnerChartList({
+  onDeletedChart,
   onOpenChart,
   ownerUid,
   selectedChartId,
 }: OwnerChartListProps) {
   const { charts, error, isLoading } = useOwnerCharts(ownerUid);
+  const [deletingChartId, setDeletingChartId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
+
+  const handleDeleteChart = async (chartId: string, title: string) => {
+    const shouldDelete = window.confirm(
+      `「${title}」を削除します。削除後は一覧と招待リンクから閲覧できなくなります。よろしいですか？`,
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setDeletingChartId(chartId);
+    setDeleteError(null);
+    setDeleteSuccess(null);
+
+    try {
+      const deletedChartId = await deleteChart(chartId);
+      setDeleteSuccess("チャートを削除しました。");
+      onDeletedChart(deletedChartId);
+    } catch (deleteChartError) {
+      setDeleteError(
+        deleteChartError instanceof Error
+          ? deleteChartError.message
+          : "チャートの削除に失敗しました。",
+      );
+    } finally {
+      setDeletingChartId(null);
+    }
+  };
 
   return (
     <Box
@@ -51,6 +86,20 @@ export function OwnerChartList({
           <Heading size="md">作成したチャート</Heading>
           <Badge colorScheme="teal">{charts.length}/5</Badge>
         </HStack>
+
+        {deleteSuccess ? (
+          <Alert status="success" borderRadius="md">
+            <AlertIcon />
+            <AlertDescription>{deleteSuccess}</AlertDescription>
+          </Alert>
+        ) : null}
+
+        {deleteError ? (
+          <Alert status="error" borderRadius="md">
+            <AlertIcon />
+            <AlertDescription>{deleteError}</AlertDescription>
+          </Alert>
+        ) : null}
 
         {!ownerUid ? (
           <Text color="gray.600">ログインすると作成したチャートを確認できます。</Text>
@@ -86,14 +135,26 @@ export function OwnerChartList({
                       ID: {chart.id}
                     </Text>
                   </Box>
-                  <Button
-                    size="sm"
-                    variant={selectedChartId === chart.id ? "solid" : "outline"}
-                    colorScheme={selectedChartId === chart.id ? "teal" : undefined}
-                    onClick={() => onOpenChart(chart.id)}
-                  >
-                    開く
-                  </Button>
+                  <HStack flexShrink={0}>
+                    <Button
+                      size="sm"
+                      variant={selectedChartId === chart.id ? "solid" : "outline"}
+                      colorScheme={selectedChartId === chart.id ? "teal" : undefined}
+                      onClick={() => onOpenChart(chart.id)}
+                    >
+                      開く
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      isLoading={deletingChartId === chart.id}
+                      loadingText="削除中"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => void handleDeleteChart(chart.id, chart.title)}
+                    >
+                      削除
+                    </Button>
+                  </HStack>
                 </HStack>
               </Box>
             ))}
