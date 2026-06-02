@@ -19,6 +19,7 @@ type UseOwnerChartDetailResult = {
   detail: OwnerChartDetail | null;
   isLoading: boolean;
   error: string | null;
+  setChartTitle: (title: string) => void;
 };
 
 export function useOwnerChartDetail(
@@ -61,7 +62,9 @@ export function useOwnerChartDetail(
         }
 
         setDetail({
-          chart: chartSnapshot.data() as ChartDocument,
+          chart: chartSnapshot.data({
+            serverTimestamps: "estimate",
+          }) as ChartDocument,
           cells: cellsSnapshot.docs
             .map((cellSnapshot) => cellSnapshot.data() as CellDocument)
             .sort(
@@ -111,5 +114,20 @@ export function useOwnerChartDetail(
     detail,
     isLoading,
     error,
+    setChartTitle: (title: string) => {
+      setDetail((currentDetail) => {
+        if (!currentDetail) {
+          return currentDetail;
+        }
+
+        return {
+          ...currentDetail,
+          chart: {
+            ...currentDetail.chart,
+            title,
+          },
+        };
+      });
+    },
   };
 }

@@ -20,7 +20,11 @@ type OwnerChartListProps = {
   onOpenChart: (chartId: string) => void;
 };
 
-function formatUpdatedAt(seconds: number) {
+function formatUpdatedAt(seconds: number | undefined) {
+  if (seconds === undefined) {
+    return "更新中";
+  }
+
   return new Intl.DateTimeFormat("ja-JP", {
     dateStyle: "medium",
     timeStyle: "short",

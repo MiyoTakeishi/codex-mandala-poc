@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
+import { ChartTitleEditor } from "./ChartTitleEditor";
 import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
 type OwnerChartDetailProps = {
@@ -21,7 +22,7 @@ type OwnerChartDetailProps = {
 };
 
 export function OwnerChartDetail({ chartId, onClose }: OwnerChartDetailProps) {
-  const { detail, error, isLoading } = useOwnerChartDetail(chartId);
+  const { detail, error, isLoading, setChartTitle } = useOwnerChartDetail(chartId);
 
   if (!chartId) {
     return null;
@@ -64,6 +65,11 @@ export function OwnerChartDetail({ chartId, onClose }: OwnerChartDetailProps) {
                 ID: {detail.chart.id}
               </Text>
             </Box>
+            <ChartTitleEditor
+              chartId={detail.chart.id}
+              title={detail.chart.title}
+              onSaved={setChartTitle}
+            />
 
             <MandalaChartGrid cells={detail.cells} />
           </VStack>

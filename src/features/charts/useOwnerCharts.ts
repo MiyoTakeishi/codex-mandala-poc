@@ -49,7 +49,9 @@ export function useOwnerCharts(ownerUid: string | undefined): UseOwnerChartsResu
       (snapshot) => {
         setCharts(
           snapshot.docs.map((chartSnapshot) => {
-            const data = chartSnapshot.data() as ChartDocument;
+            const data = chartSnapshot.data({
+              serverTimestamps: "estimate",
+            }) as ChartDocument;
 
             return {
               ...data,
