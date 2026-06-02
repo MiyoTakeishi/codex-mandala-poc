@@ -5,6 +5,13 @@ import { firestore } from "../../firebase/firestore";
 
 const MAX_CELL_BODY_LENGTH = 200;
 
+export class CellUpdatePermissionError extends Error {
+  constructor() {
+    super("このセルを編集する権限がありません。");
+    this.name = "CellUpdatePermissionError";
+  }
+}
+
 export function normalizeCellBody(body: string) {
   const normalizedBody = body.trim();
 
@@ -33,7 +40,7 @@ export async function updateCellBody(params: {
     return body;
   } catch (error) {
     if (error instanceof FirebaseError && error.code === "permission-denied") {
-      throw new Error("このセルを編集する権限がありません。");
+      throw new CellUpdatePermissionError();
     }
 
     throw new Error("セルの保存に失敗しました。");

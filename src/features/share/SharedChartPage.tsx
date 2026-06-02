@@ -68,6 +68,11 @@ export function SharedChartPage() {
     }
   };
 
+  const handleSavePermissionDenied = (message: string) => {
+    setIsEditorMode(false);
+    setEditorAccessError(`${message} ゲスト閲覧に戻りました。`);
+  };
+
   return (
     <Box minH="100vh" bg="gray.50" color="gray.900">
       <Container maxW="6xl" py={{ base: 8, md: 12 }}>
@@ -158,6 +163,7 @@ export function SharedChartPage() {
                   currentUserUid={currentUser?.uid}
                   isReadOnly={!canEdit}
                   onCellSaved={setCellBody}
+                  onSavePermissionDenied={handleSavePermissionDenied}
                 />
               </VStack>
             ) : null}

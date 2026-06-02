@@ -1,7 +1,10 @@
 import { Box, Text, Textarea } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-import { updateCellBody } from "../../features/charts/updateCellBody";
+import {
+  CellUpdatePermissionError,
+  updateCellBody,
+} from "../../features/charts/updateCellBody";
 import type { CellDocument } from "../../types/firestore";
 
 type MandalaChartGridProps = {
@@ -10,6 +13,7 @@ type MandalaChartGridProps = {
   currentUserUid?: string;
   isReadOnly?: boolean;
   onCellSaved?: (cellId: string, body: string) => void;
+  onSavePermissionDenied?: (message: string) => void;
 };
 
 type CellSaveStatus = "idle" | "saving" | "saved" | "error";
@@ -113,6 +117,7 @@ export function MandalaChartGrid({
   currentUserUid,
   isReadOnly = false,
   onCellSaved,
+  onSavePermissionDenied,
 }: MandalaChartGridProps) {
   const [draftBodies, setDraftBodies] = useState<Record<string, string>>({});
   const [saveStatus, setSaveStatus] = useState<CellSaveStatus>("idle");
@@ -200,6 +205,10 @@ export function MandalaChartGrid({
     } catch (error) {
       setSaveStatus("error");
       setSaveError(error instanceof Error ? error.message : "セルの保存に失敗しました。");
+
+      if (error instanceof CellUpdatePermissionError) {
+        onSavePermissionDenied?.(error.message);
+      }
     }
   }
 
