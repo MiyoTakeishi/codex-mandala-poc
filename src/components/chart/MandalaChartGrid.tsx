@@ -232,9 +232,12 @@ export function MandalaChartGrid({
       <Box overflowX="auto" pb={2}>
       <Box
         display="grid"
-        gridTemplateColumns="repeat(3, minmax(252px, 1fr))"
-        gap={3}
-        minW="756px"
+        gridTemplateColumns={{
+          base: "repeat(3, minmax(136px, 1fr))",
+          md: "repeat(3, minmax(252px, 1fr))",
+        }}
+        gap={{ base: 1, md: 3 }}
+        minW={{ base: "432px", md: "756px" }}
       >
         {Array.from({ length: 9 }, (_, blockIndex) => {
           const blockRow = Math.floor(blockIndex / 3);
@@ -246,10 +249,13 @@ export function MandalaChartGrid({
             <Box
               key={`${blockRow}:${blockCol}`}
               display="grid"
-              gridTemplateColumns="repeat(3, minmax(84px, 1fr))"
+              gridTemplateColumns={{
+                base: "repeat(3, minmax(44px, 1fr))",
+                md: "repeat(3, minmax(84px, 1fr))",
+              }}
               gap="1px"
               bg={isCenterBlock ? "gray.500" : blockTheme.blockBorder}
-              border="3px solid"
+              border={{ base: "2px solid", md: "3px solid" }}
               borderColor={isCenterBlock ? "gray.700" : blockTheme.blockBorder}
               position="relative"
             >
@@ -290,10 +296,10 @@ export function MandalaChartGrid({
                     key={`${rowIndex}:${colIndex}`}
                     aspectRatio="1"
                     bg={cellBg}
-                    border="3px solid"
+                    border={{ base: "2px solid", md: "3px solid" }}
                     borderColor={isFocused ? "blue.500" : cellBorderColor}
                     boxShadow={isFocused ? "0 0 0 3px var(--chakra-colors-blue-100)" : "none"}
-                    p={2}
+                    p={{ base: 1, md: 2 }}
                     overflow="hidden"
                     position="relative"
                   >
@@ -303,8 +309,8 @@ export function MandalaChartGrid({
                         zIndex={0}
                         left="50%"
                         top="50%"
-                        w="34px"
-                        h="18px"
+                        w={{ base: "24px", md: "34px" }}
+                        h={{ base: "12px", md: "18px" }}
                         bg={centerCellTheme.centerBorder}
                         opacity={0.2}
                         pointerEvents="none"
@@ -313,11 +319,20 @@ export function MandalaChartGrid({
                           content: '""',
                           position: "absolute",
                           top: "50%",
-                          right: "-17px",
+                          right: { base: "-12px", md: "-17px" },
                           transform: "translateY(-50%)",
-                          borderTop: "18px solid transparent",
-                          borderBottom: "18px solid transparent",
-                          borderLeft: "20px solid currentColor",
+                          borderTop: {
+                            base: "12px solid transparent",
+                            md: "18px solid transparent",
+                          },
+                          borderBottom: {
+                            base: "12px solid transparent",
+                            md: "18px solid transparent",
+                          },
+                          borderLeft: {
+                            base: "14px solid currentColor",
+                            md: "20px solid currentColor",
+                          },
                           color: centerCellTheme.centerBorder,
                         }}
                       />
@@ -330,7 +345,7 @@ export function MandalaChartGrid({
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        fontSize={isMainCell ? "md" : "sm"}
+                        fontSize={isMainCell ? { base: "sm", md: "md" } : { base: "xs", md: "sm" }}
                         fontWeight={isMainCell || isBlockCenter ? "semibold" : "normal"}
                         textAlign="center"
                         whiteSpace="pre-wrap"
@@ -341,11 +356,11 @@ export function MandalaChartGrid({
                       <Textarea
                         position="relative"
                         zIndex={1}
-                        fontSize={isMainCell ? "md" : "sm"}
+                        fontSize={isMainCell ? { base: "sm", md: "md" } : { base: "xs", md: "sm" }}
                         fontWeight={isMainCell || isBlockCenter ? "semibold" : "normal"}
                         textAlign="center"
                         value={draftBodies[cellId] ?? ""}
-                        minH="56px"
+                        minH={{ base: "36px", md: "56px" }}
                         h="100%"
                         p={0}
                         border="0"
