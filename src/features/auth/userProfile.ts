@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 
 import { firestore } from "../../firebase/firestore";
+import type { UserDocument } from "../../types/firestore";
 
 type UserProfileInput = {
   uid: string;
@@ -44,6 +45,8 @@ export async function upsertUserProfile(user: User) {
     displayName: profile.displayName,
     photoURL: profile.photoURL,
     updatedAt: serverTimestamp(),
+  } satisfies Omit<UserDocument, "createdAt" | "updatedAt"> & {
+    updatedAt: ReturnType<typeof serverTimestamp>;
   };
 
   if (snapshot.exists()) {
