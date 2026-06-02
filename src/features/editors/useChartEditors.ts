@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   collection,
   FirestoreError,
@@ -14,6 +14,7 @@ type UseChartEditorsResult = {
   editors: EditorDocument[];
   isLoading: boolean;
   error: string | null;
+  reload: () => Promise<void>;
 };
 
 export function useChartEditors(chartId: string | null): UseChartEditorsResult {
@@ -21,81 +22,64 @@ export function useChartEditors(chartId: string | null): UseChartEditorsResult {
   const [isLoading, setIsLoading] = useState(Boolean(chartId));
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let isMounted = true;
-
+  const loadEditors = useCallback(async () => {
     if (!chartId) {
       setEditors([]);
       setIsLoading(false);
       setError(null);
-      return () => {
-        isMounted = false;
-      };
+      return;
     }
 
     const targetChartId = chartId;
 
-    async function loadEditors() {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const editorsQuery = query(
-          collection(firestore, "charts", targetChartId, "editors"),
-          orderBy("createdAt", "asc"),
-        );
-        const editorsSnapshot = await getDocs(editorsQuery);
+    try {
+      const editorsQuery = query(
+        collection(firestore, "charts", targetChartId, "editors"),
+        orderBy("createdAt", "asc"),
+      );
+      const editorsSnapshot = await getDocs(editorsQuery);
 
-        if (!isMounted) {
+      setEditors(
+        editorsSnapshot.docs.map(
+          (editorSnapshot) => editorSnapshot.data() as EditorDocument,
+        ),
+      );
+    } catch (loadError) {
+      console.error("Failed to load chart editors.", loadError);
+
+      if (loadError instanceof FirestoreError) {
+        if (loadError.code === "permission-denied") {
+          setError("編集者一覧を取得する権限がありません。");
           return;
         }
 
-        setEditors(
-          editorsSnapshot.docs.map(
-            (editorSnapshot) => editorSnapshot.data() as EditorDocument,
-          ),
-        );
-      } catch (loadError) {
-        if (!isMounted) {
+        if (loadError.code === "failed-precondition") {
+          setError("編集者一覧の取得に必要なFirestoreインデックスが未作成です。");
           return;
-        }
-
-        console.error("Failed to load chart editors.", loadError);
-
-        if (loadError instanceof FirestoreError) {
-          if (loadError.code === "permission-denied") {
-            setError("編集者一覧を取得する権限がありません。");
-            return;
-          }
-
-          if (loadError.code === "failed-precondition") {
-            setError("編集者一覧の取得に必要なFirestoreインデックスが未作成です。");
-            return;
-          }
-        }
-
-        setError(
-          loadError instanceof Error
-            ? loadError.message
-            : "編集者一覧の取得に失敗しました。",
-        );
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
         }
       }
+
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "編集者一覧の取得に失敗しました。",
+      );
+    } finally {
+      setIsLoading(false);
     }
-
-    void loadEditors();
-
-    return () => {
-      isMounted = false;
-    };
   }, [chartId]);
+
+  useEffect(() => {
+    void loadEditors();
+  }, [loadEditors]);
 
   return {
     editors,
     isLoading,
     error,
+    reload: loadEditors,
   };
 }
