@@ -35,54 +35,63 @@ const themeColors = [
     blockBorder: "red.300",
     centerBg: "red.50",
     centerBorder: "red.400",
+    cellBorder: "red.100",
   },
   {
     blockBg: "pink.50",
     blockBorder: "pink.300",
     centerBg: "pink.50",
     centerBorder: "pink.400",
+    cellBorder: "pink.100",
   },
   {
     blockBg: "purple.50",
     blockBorder: "purple.300",
     centerBg: "purple.50",
     centerBorder: "purple.400",
+    cellBorder: "purple.100",
   },
   {
     blockBg: "blue.50",
     blockBorder: "blue.300",
     centerBg: "blue.50",
     centerBorder: "blue.400",
+    cellBorder: "blue.100",
   },
   {
     blockBg: "orange.50",
     blockBorder: "orange.300",
     centerBg: "white",
     centerBorder: "orange.400",
+    cellBorder: "orange.100",
   },
   {
     blockBg: "cyan.50",
     blockBorder: "cyan.300",
     centerBg: "cyan.50",
     centerBorder: "cyan.400",
+    cellBorder: "cyan.100",
   },
   {
     blockBg: "green.50",
     blockBorder: "green.300",
     centerBg: "green.50",
     centerBorder: "green.400",
+    cellBorder: "green.100",
   },
   {
     blockBg: "yellow.50",
     blockBorder: "yellow.300",
     centerBg: "yellow.50",
     centerBorder: "yellow.400",
+    cellBorder: "yellow.100",
   },
   {
     blockBg: "orange.100",
     blockBorder: "orange.400",
     centerBg: "orange.50",
     centerBorder: "orange.500",
+    cellBorder: "orange.100",
   },
 ];
 
@@ -254,9 +263,10 @@ export function MandalaChartGrid({
                 md: "repeat(3, minmax(84px, 1fr))",
               }}
               gap="1px"
-              bg={isCenterBlock ? "gray.500" : blockTheme.blockBorder}
-              border={{ base: "2px solid", md: "3px solid" }}
-              borderColor={isCenterBlock ? "gray.700" : blockTheme.blockBorder}
+              bg={isCenterBlock ? "orange.100" : blockTheme.cellBorder}
+              borderWidth={{ base: "2px", md: "3px" }}
+              borderStyle="solid"
+              borderColor={isCenterBlock ? "orange.400" : blockTheme.blockBorder}
               position="relative"
             >
               {Array.from({ length: 9 }, (_, innerIndex) => {
@@ -286,17 +296,18 @@ export function MandalaChartGrid({
                 const cellBorderColor = isCenterBlock || isBlockCenter
                   ? isCenterBlock
                     ? isMainCell
-                      ? "gray.700"
-                      : "gray.300"
+                      ? "orange.500"
+                      : centerCellTheme.cellBorder
                     : centerCellTheme.centerBorder
-                  : "gray.100";
+                  : blockTheme.cellBorder;
 
                 return (
                   <Box
                     key={`${rowIndex}:${colIndex}`}
                     aspectRatio="1"
                     bg={cellBg}
-                    border={{ base: "2px solid", md: "3px solid" }}
+                    borderWidth={{ base: "2px", md: "3px" }}
+                    borderStyle="solid"
                     borderColor={isFocused ? "blue.500" : cellBorderColor}
                     boxShadow={isFocused ? "0 0 0 3px var(--chakra-colors-blue-100)" : "none"}
                     p={{ base: 1, md: 2 }}
