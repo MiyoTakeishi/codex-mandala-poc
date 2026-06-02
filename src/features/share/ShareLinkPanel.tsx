@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
+import { EditorListPanel } from "../editors/EditorListPanel";
 import { createInviteLink } from "./createInviteLink";
 
 type ShareLinkPanelProps = {
@@ -138,6 +139,8 @@ export function ShareLinkPanel({
             <AlertDescription>{issueError}</AlertDescription>
           </Alert>
         ) : null}
+
+        <EditorListPanel chartId={chartId} />
       </VStack>
     </Box>
   );
