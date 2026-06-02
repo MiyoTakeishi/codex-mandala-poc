@@ -19,6 +19,7 @@ type UseOwnerChartDetailResult = {
   detail: OwnerChartDetail | null;
   isLoading: boolean;
   error: string | null;
+  setCellBody: (cellId: string, body: string) => void;
   setChartTitle: (title: string) => void;
 };
 
@@ -114,6 +115,25 @@ export function useOwnerChartDetail(
     detail,
     isLoading,
     error,
+    setCellBody: (cellId: string, body: string) => {
+      setDetail((currentDetail) => {
+        if (!currentDetail) {
+          return currentDetail;
+        }
+
+        return {
+          ...currentDetail,
+          cells: currentDetail.cells.map((cell) =>
+            cell.id === cellId
+              ? {
+                  ...cell,
+                  body,
+                }
+              : cell,
+          ),
+        };
+      });
+    },
     setChartTitle: (title: string) => {
       setDetail((currentDetail) => {
         if (!currentDetail) {

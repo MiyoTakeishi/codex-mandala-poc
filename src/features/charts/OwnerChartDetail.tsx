@@ -18,11 +18,17 @@ import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
 type OwnerChartDetailProps = {
   chartId: string | null;
+  currentUserUid: string | undefined;
   onClose: () => void;
 };
 
-export function OwnerChartDetail({ chartId, onClose }: OwnerChartDetailProps) {
-  const { detail, error, isLoading, setChartTitle } = useOwnerChartDetail(chartId);
+export function OwnerChartDetail({
+  chartId,
+  currentUserUid,
+  onClose,
+}: OwnerChartDetailProps) {
+  const { detail, error, isLoading, setCellBody, setChartTitle } =
+    useOwnerChartDetail(chartId);
 
   if (!chartId) {
     return null;
@@ -71,7 +77,14 @@ export function OwnerChartDetail({ chartId, onClose }: OwnerChartDetailProps) {
               onSaved={setChartTitle}
             />
 
-            <MandalaChartGrid cells={detail.cells} />
+            {currentUserUid ? (
+              <MandalaChartGrid
+                chartId={detail.chart.id}
+                cells={detail.cells}
+                currentUserUid={currentUserUid}
+                onCellSaved={setCellBody}
+              />
+            ) : null}
           </VStack>
         ) : null}
       </VStack>

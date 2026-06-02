@@ -160,6 +160,7 @@ export function App() {
           />
           <OwnerChartDetail
             chartId={selectedChartId}
+            currentUserUid={currentUser?.uid}
             onClose={() => setSelectedChartId(null)}
           />
         </VStack>
