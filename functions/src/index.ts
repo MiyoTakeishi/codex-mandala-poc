@@ -1,1 +1,1 @@
-export {};
+export { createChart } from "./callable/createChart";
