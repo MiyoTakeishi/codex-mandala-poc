@@ -16,6 +16,7 @@ import {
 } from "firebase/auth";
 
 import { auth } from "../../firebase/auth";
+import { upsertUserProfile } from "./userProfile";
 
 type AuthContextValue = {
   currentUser: User | null;
@@ -42,7 +43,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
-      (user) => {
+      async (user) => {
+        if (user) {
+          try {
+            await upsertUserProfile(user);
+          } catch {
+            setAuthError("ユーザー情報の保存に失敗しました。");
+          }
+        }
+
         setCurrentUser(user);
         setIsAuthLoading(false);
       },
