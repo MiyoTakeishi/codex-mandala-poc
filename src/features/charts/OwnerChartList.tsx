@@ -16,6 +16,8 @@ import { useOwnerCharts } from "./useOwnerCharts";
 
 type OwnerChartListProps = {
   ownerUid: string | undefined;
+  selectedChartId: string | null;
+  onOpenChart: (chartId: string) => void;
 };
 
 function formatUpdatedAt(seconds: number) {
@@ -25,7 +27,11 @@ function formatUpdatedAt(seconds: number) {
   }).format(new Date(seconds * 1000));
 }
 
-export function OwnerChartList({ ownerUid }: OwnerChartListProps) {
+export function OwnerChartList({
+  onOpenChart,
+  ownerUid,
+  selectedChartId,
+}: OwnerChartListProps) {
   const { charts, error, isLoading } = useOwnerCharts(ownerUid);
 
   return (
@@ -76,7 +82,12 @@ export function OwnerChartList({ ownerUid }: OwnerChartListProps) {
                       ID: {chart.id}
                     </Text>
                   </Box>
-                  <Button size="sm" variant="outline" isDisabled>
+                  <Button
+                    size="sm"
+                    variant={selectedChartId === chart.id ? "solid" : "outline"}
+                    colorScheme={selectedChartId === chart.id ? "teal" : undefined}
+                    onClick={() => onOpenChart(chart.id)}
+                  >
                     開く
                   </Button>
                 </HStack>

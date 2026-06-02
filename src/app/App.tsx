@@ -19,6 +19,7 @@ import { useState } from "react";
 
 import { useAuth } from "../features/auth/AuthProvider";
 import { createChart } from "../features/charts/createChart";
+import { OwnerChartDetail } from "../features/charts/OwnerChartDetail";
 import { OwnerChartList } from "../features/charts/OwnerChartList";
 
 export function App() {
@@ -34,6 +35,7 @@ export function App() {
   const [isCreatingChart, setIsCreatingChart] = useState(false);
   const [chartCreateError, setChartCreateError] = useState<string | null>(null);
   const [createdChartId, setCreatedChartId] = useState<string | null>(null);
+  const [selectedChartId, setSelectedChartId] = useState<string | null>(null);
 
   const handleCreateChart = async () => {
     setIsCreatingChart(true);
@@ -43,6 +45,7 @@ export function App() {
     try {
       const chartId = await createChart(chartTitle);
       setCreatedChartId(chartId);
+      setSelectedChartId(chartId);
       setChartTitle("");
     } catch (error) {
       setChartCreateError(
@@ -150,7 +153,15 @@ export function App() {
               ) : null}
             </VStack>
           </Box>
-          <OwnerChartList ownerUid={currentUser?.uid} />
+          <OwnerChartList
+            ownerUid={currentUser?.uid}
+            selectedChartId={selectedChartId}
+            onOpenChart={setSelectedChartId}
+          />
+          <OwnerChartDetail
+            chartId={selectedChartId}
+            onClose={() => setSelectedChartId(null)}
+          />
         </VStack>
       </Container>
     </Box>
