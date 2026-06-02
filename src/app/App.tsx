@@ -19,6 +19,7 @@ import { useState } from "react";
 
 import { useAuth } from "../features/auth/AuthProvider";
 import { createChart } from "../features/charts/createChart";
+import { OwnerChartList } from "../features/charts/OwnerChartList";
 
 export function App() {
   const {
@@ -149,6 +150,7 @@ export function App() {
               ) : null}
             </VStack>
           </Box>
+          <OwnerChartList ownerUid={currentUser?.uid} />
         </VStack>
       </Container>
     </Box>

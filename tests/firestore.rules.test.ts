@@ -11,6 +11,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -147,6 +148,7 @@ describe("charts rules", () => {
       collection(db, "charts"),
       where("ownerUid", "==", OWNER_UID),
       where("isDeleted", "==", false),
+      orderBy("updatedAt", "desc"),
     );
 
     await assertSucceeds(getDocs(chartsQuery));
