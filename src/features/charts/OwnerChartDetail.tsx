@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
+import { ShareLinkPanel } from "../share/ShareLinkPanel";
 import { ChartTitleEditor } from "./ChartTitleEditor";
 import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
@@ -27,7 +28,7 @@ export function OwnerChartDetail({
   currentUserUid,
   onClose,
 }: OwnerChartDetailProps) {
-  const { detail, error, isLoading, setCellBody, setChartTitle } =
+  const { detail, error, isLoading, setCellBody, setChartTitle, setInviteToken } =
     useOwnerChartDetail(chartId);
 
   if (!chartId) {
@@ -75,6 +76,11 @@ export function OwnerChartDetail({
               chartId={detail.chart.id}
               title={detail.chart.title}
               onSaved={setChartTitle}
+            />
+            <ShareLinkPanel
+              chartId={detail.chart.id}
+              inviteToken={detail.chart.inviteToken}
+              onInviteTokenIssued={setInviteToken}
             />
 
             {currentUserUid ? (

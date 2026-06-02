@@ -21,6 +21,7 @@ type UseOwnerChartDetailResult = {
   error: string | null;
   setCellBody: (cellId: string, body: string) => void;
   setChartTitle: (title: string) => void;
+  setInviteToken: (token: string) => void;
 };
 
 export function useOwnerChartDetail(
@@ -145,6 +146,21 @@ export function useOwnerChartDetail(
           chart: {
             ...currentDetail.chart,
             title,
+          },
+        };
+      });
+    },
+    setInviteToken: (token: string) => {
+      setDetail((currentDetail) => {
+        if (!currentDetail) {
+          return currentDetail;
+        }
+
+        return {
+          ...currentDetail,
+          chart: {
+            ...currentDetail.chart,
+            inviteToken: token,
           },
         };
       });
