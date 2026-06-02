@@ -6,14 +6,19 @@ import {
   Box,
   Button,
   Container,
+  FormControl,
+  FormLabel,
   Heading,
   HStack,
+  Input,
   Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
 import { useAuth } from "../features/auth/AuthProvider";
+import { createChart } from "../features/charts/createChart";
 
 export function App() {
   const {
@@ -24,6 +29,30 @@ export function App() {
     logout,
     signInWithGoogle,
   } = useAuth();
+  const [chartTitle, setChartTitle] = useState("");
+  const [isCreatingChart, setIsCreatingChart] = useState(false);
+  const [chartCreateError, setChartCreateError] = useState<string | null>(null);
+  const [createdChartId, setCreatedChartId] = useState<string | null>(null);
+
+  const handleCreateChart = async () => {
+    setIsCreatingChart(true);
+    setChartCreateError(null);
+    setCreatedChartId(null);
+
+    try {
+      const chartId = await createChart(chartTitle);
+      setCreatedChartId(chartId);
+      setChartTitle("");
+    } catch (error) {
+      setChartCreateError(
+        error instanceof Error
+          ? error.message
+          : "チャートの作成に失敗しました。",
+      );
+    } finally {
+      setIsCreatingChart(false);
+    }
+  };
 
   return (
     <Box minH="100vh" bg="gray.50" color="gray.900">
@@ -79,8 +108,45 @@ export function App() {
             <VStack align="start" spacing={4}>
               <Heading size="lg">共有できる9x9チャートを作成する</Heading>
               <Text color="gray.600">
-                Googleログインでアプリに入り、次のフェーズでユーザー情報をFirestoreへ保存します。
+                ログイン後、9x9のマンダラチャートを新規作成できます。
               </Text>
+              <FormControl maxW="lg" isDisabled={!currentUser || isCreatingChart}>
+                <FormLabel>チャートタイトル</FormLabel>
+                <Input
+                  value={chartTitle}
+                  maxLength={80}
+                  placeholder="例: 今年達成したいこと"
+                  onChange={(event) => setChartTitle(event.target.value)}
+                />
+              </FormControl>
+              <Button
+                colorScheme="teal"
+                isDisabled={!currentUser || isAuthLoading}
+                isLoading={isCreatingChart}
+                loadingText="作成中"
+                onClick={handleCreateChart}
+              >
+                チャートを作成
+              </Button>
+              {!currentUser && !isAuthLoading ? (
+                <Text fontSize="sm" color="gray.600">
+                  チャート作成にはGoogleログインが必要です。
+                </Text>
+              ) : null}
+              {createdChartId ? (
+                <Alert status="success" borderRadius="md">
+                  <AlertIcon />
+                  <AlertDescription>
+                    チャートを作成しました。ID: {createdChartId}
+                  </AlertDescription>
+                </Alert>
+              ) : null}
+              {chartCreateError ? (
+                <Alert status="error" borderRadius="md">
+                  <AlertIcon />
+                  <AlertDescription>{chartCreateError}</AlertDescription>
+                </Alert>
+              ) : null}
             </VStack>
           </Box>
         </VStack>
