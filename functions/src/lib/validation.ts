@@ -2,6 +2,8 @@ import * as functions from "firebase-functions";
 
 import { DEFAULT_CHART_TITLE, MAX_CHART_TITLE_LENGTH } from "./constants";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 type CreateChartData = {
   title?: unknown;
 };
@@ -45,4 +47,24 @@ export function normalizeChartTitle(data: CreateChartData) {
   }
 
   return title;
+}
+
+export function normalizeEmail(value: unknown) {
+  if (typeof value !== "string") {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "メールアドレスが不正です。",
+    );
+  }
+
+  const email = value.trim().toLowerCase();
+
+  if (!EMAIL_PATTERN.test(email)) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "メールアドレスの形式が不正です。",
+    );
+  }
+
+  return email;
 }
