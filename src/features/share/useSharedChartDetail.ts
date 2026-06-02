@@ -23,6 +23,7 @@ type UseSharedChartDetailResult = {
   detail: SharedChartDetail | null;
   isLoading: boolean;
   error: string | null;
+  setCellBody: (cellId: string, body: string) => void;
 };
 
 export function useSharedChartDetail(
@@ -126,5 +127,24 @@ export function useSharedChartDetail(
     detail,
     isLoading,
     error,
+    setCellBody: (cellId: string, body: string) => {
+      setDetail((currentDetail) => {
+        if (!currentDetail) {
+          return currentDetail;
+        }
+
+        return {
+          ...currentDetail,
+          cells: currentDetail.cells.map((cell) =>
+            cell.id === cellId
+              ? {
+                  ...cell,
+                  body,
+                }
+              : cell,
+          ),
+        };
+      });
+    },
   };
 }
