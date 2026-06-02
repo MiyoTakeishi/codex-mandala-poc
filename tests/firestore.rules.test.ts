@@ -182,6 +182,9 @@ describe("charts rules", () => {
     });
 
     await assertFails(getDoc(doc(guestDb(), "charts", "deleted-shared-chart")));
+    await assertFails(
+      getDoc(doc(guestDb(), "charts", "deleted-shared-chart", "cells", "r0c0")),
+    );
   });
 
   it("allows owners to update titles only", async () => {
@@ -251,6 +254,24 @@ describe("inviteLinks rules", () => {
     });
 
     await assertSucceeds(getDoc(doc(guestDb(), "inviteLinks", "token-1")));
+  });
+
+  it("rejects reads for invite links connected to deleted charts", async () => {
+    await seedChart({
+      chartId: "deleted-shared-chart",
+      inviteToken: "token-1",
+      isDeleted: true,
+    });
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), "inviteLinks", "token-1"), {
+        token: "token-1",
+        chartId: "deleted-shared-chart",
+        createdByUid: OWNER_UID,
+        createdAt: NOW,
+      });
+    });
+
+    await assertFails(getDoc(doc(guestDb(), "inviteLinks", "token-1")));
   });
 
   it("rejects listing invite links", async () => {
