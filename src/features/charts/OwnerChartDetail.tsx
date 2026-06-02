@@ -7,12 +7,12 @@ import {
   Button,
   Heading,
   HStack,
-  SimpleGrid,
   Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
 
+import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
 import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
 type OwnerChartDetailProps = {
@@ -65,23 +65,7 @@ export function OwnerChartDetail({ chartId, onClose }: OwnerChartDetailProps) {
               </Text>
             </Box>
 
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3}>
-              {detail.cells.slice(0, 9).map((cell) => (
-                <Box
-                  key={cell.id}
-                  border="1px solid"
-                  borderColor="gray.200"
-                  borderRadius="md"
-                  minH="72px"
-                  p={3}
-                >
-                  <Text fontSize="xs" color="gray.500">
-                    {cell.id} / row {cell.rowIndex + 1}, col {cell.colIndex + 1}
-                  </Text>
-                  <Text mt={2}>{cell.body || "未入力"}</Text>
-                </Box>
-              ))}
-            </SimpleGrid>
+            <MandalaChartGrid cells={detail.cells} />
           </VStack>
         ) : null}
       </VStack>
