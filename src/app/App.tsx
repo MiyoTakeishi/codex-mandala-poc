@@ -16,13 +16,15 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 
 import { useAuth } from "../features/auth/AuthProvider";
 import { createChart } from "../features/charts/createChart";
 import { OwnerChartDetail } from "../features/charts/OwnerChartDetail";
 import { OwnerChartList } from "../features/charts/OwnerChartList";
+import { SharedChartPage } from "../features/share/SharedChartPage";
 
-export function App() {
+function OwnerHomePage() {
   const {
     authError,
     clearAuthError,
@@ -166,5 +168,14 @@ export function App() {
         </VStack>
       </Container>
     </Box>
+  );
+}
+
+export function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<OwnerHomePage />} />
+      <Route path="/share/:token" element={<SharedChartPage />} />
+    </Routes>
   );
 }

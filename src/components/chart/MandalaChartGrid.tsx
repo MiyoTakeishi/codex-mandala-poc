@@ -7,8 +7,9 @@ import type { CellDocument } from "../../types/firestore";
 type MandalaChartGridProps = {
   chartId: string;
   cells: CellDocument[];
-  currentUserUid: string;
-  onCellSaved: (cellId: string, body: string) => void;
+  currentUserUid?: string;
+  isReadOnly?: boolean;
+  onCellSaved?: (cellId: string, body: string) => void;
 };
 
 type CellSaveStatus = "idle" | "saving" | "saved" | "error";
@@ -110,6 +111,7 @@ export function MandalaChartGrid({
   cells,
   chartId,
   currentUserUid,
+  isReadOnly = false,
   onCellSaved,
 }: MandalaChartGridProps) {
   const [draftBodies, setDraftBodies] = useState<Record<string, string>>({});
@@ -140,6 +142,10 @@ export function MandalaChartGrid({
   }
 
   function handleDraftChange(cellId: string, body: string) {
+    if (isReadOnly) {
+      return;
+    }
+
     const linkedCellIds = getLinkedCellIds(cellId);
 
     setDraftBodies((current) => ({
@@ -153,7 +159,7 @@ export function MandalaChartGrid({
   async function handleBlur(cell: CellDocument | undefined, fallbackCellId: string) {
     setFocusedCellId(null);
 
-    if (!cell) {
+    if (isReadOnly || !cell || !currentUserUid || !onCellSaved) {
       return;
     }
 
@@ -200,7 +206,7 @@ export function MandalaChartGrid({
   return (
     <Box>
       <Box minH="24px" mb={2}>
-        {saveStatus !== "idle" ? (
+        {!isReadOnly && saveStatus !== "idle" ? (
           <Text
             fontSize="sm"
             color={saveStatus === "error" ? "red.600" : "gray.600"}
@@ -307,28 +313,46 @@ export function MandalaChartGrid({
                         }}
                       />
                     ) : null}
-                    <Textarea
-                      position="relative"
-                      zIndex={1}
-                      fontSize={isMainCell ? "md" : "sm"}
-                      fontWeight={isMainCell || isBlockCenter ? "semibold" : "normal"}
-                      textAlign="center"
-                      value={draftBodies[cellId] ?? ""}
-                      minH="56px"
-                      h="100%"
-                      p={0}
-                      border="0"
-                      bg="transparent"
-                      resize="none"
-                      placeholder="未入力"
-                      _focus={{ boxShadow: "none" }}
-                      sx={{
-                        alignContent: "center",
-                      }}
-                      onFocus={() => setFocusedCellId(cellId)}
-                      onBlur={() => void handleBlur(cell, fallbackCellId)}
-                      onChange={(event) => handleDraftChange(cellId, event.target.value)}
-                    />
+                    {isReadOnly ? (
+                      <Text
+                        position="relative"
+                        zIndex={1}
+                        h="100%"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        fontSize={isMainCell ? "md" : "sm"}
+                        fontWeight={isMainCell || isBlockCenter ? "semibold" : "normal"}
+                        textAlign="center"
+                        whiteSpace="pre-wrap"
+                      >
+                        {draftBodies[cellId] || "未入力"}
+                      </Text>
+                    ) : (
+                      <Textarea
+                        position="relative"
+                        zIndex={1}
+                        fontSize={isMainCell ? "md" : "sm"}
+                        fontWeight={isMainCell || isBlockCenter ? "semibold" : "normal"}
+                        textAlign="center"
+                        value={draftBodies[cellId] ?? ""}
+                        minH="56px"
+                        h="100%"
+                        p={0}
+                        border="0"
+                        bg="transparent"
+                        cursor="text"
+                        resize="none"
+                        placeholder="未入力"
+                        _focus={{ boxShadow: "none" }}
+                        sx={{
+                          alignContent: "center",
+                        }}
+                        onFocus={() => setFocusedCellId(cellId)}
+                        onBlur={() => void handleBlur(cell, fallbackCellId)}
+                        onChange={(event) => handleDraftChange(cellId, event.target.value)}
+                      />
+                    )}
                   </Box>
                 );
               })}
