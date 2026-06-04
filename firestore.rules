@@ -147,7 +147,7 @@ service cloud.firestore {
       }
 
       match /editors/{editorId} {
-        allow read: if isChartOwner(chartId);
+        allow read: if isChartOwner(chartId) || isChartEditor(chartId);
         allow write: if false;
       }
     }

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   collection,
   doc,
-  FirestoreError,
   getDoc,
   getDocs,
 } from "firebase/firestore";
@@ -25,6 +24,19 @@ type UseSharedChartDetailResult = {
   error: string | null;
   setCellBody: (cellId: string, body: string) => void;
 };
+
+function getFirestoreErrorCode(error: unknown) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof error.code === "string"
+  ) {
+    return error.code;
+  }
+
+  return null;
+}
 
 export function useSharedChartDetail(
   token: string | undefined,
@@ -92,16 +104,16 @@ export function useSharedChartDetail(
 
         console.error("Failed to load shared chart detail.", loadError);
 
-        if (loadError instanceof FirestoreError) {
-          if (loadError.code === "permission-denied") {
-            setError("この招待リンクではチャートを閲覧できません。");
-            return;
-          }
+        const firestoreErrorCode = getFirestoreErrorCode(loadError);
 
-          if (loadError.code === "failed-precondition") {
-            setError("共有チャートの取得に必要なFirestoreインデックスが未作成です。");
-            return;
-          }
+        if (firestoreErrorCode === "permission-denied") {
+          setError("この招待リンクではチャートを閲覧できません。");
+          return;
+        }
+
+        if (firestoreErrorCode === "failed-precondition") {
+          setError("共有チャートの取得に必要なFirestoreインデックスが未作成です。");
+          return;
         }
 
         setError(

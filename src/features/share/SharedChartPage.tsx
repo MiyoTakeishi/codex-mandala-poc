@@ -15,8 +15,12 @@ import {
 import { useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
+import { ServiceLogo } from "../../components/brand/ServiceLogo";
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useAuth } from "../auth/AuthProvider";
+import { useChartEditors } from "../editors/useChartEditors";
+import { ChartImageDownloadButton } from "../export/ChartImageDownloadButton";
 import { useSharedChartDetail } from "./useSharedChartDetail";
 import { verifyEditorAccess } from "./verifyEditorAccess";
 
@@ -34,6 +38,11 @@ export function SharedChartPage() {
   const [isVerifyingEditor, setIsVerifyingEditor] = useState(false);
   const [editorAccessError, setEditorAccessError] = useState<string | null>(null);
   const canEdit = isEditorMode && Boolean(currentUser);
+  const {
+    editors,
+    error: editorsError,
+    isLoading: isLoadingEditors,
+  } = useChartEditors(canEdit ? detail?.chart.id ?? null : null);
 
   const handleStartEditing = async () => {
     if (!token || !detail) {
@@ -78,8 +87,13 @@ export function SharedChartPage() {
       <Container maxW="6xl" py={{ base: 8, md: 12 }}>
         <VStack align="stretch" spacing={6}>
           <HStack justify="space-between" align="center">
-            <Heading size="md">共有マンダラチャート</Heading>
-            <Button as={RouterLink} to="/" variant="outline">
+            <ServiceLogo />
+            <Button
+              as={RouterLink}
+              leftIcon={<AppIcon name="home" />}
+              to="/"
+              variant="outline"
+            >
               ホームへ
             </Button>
           </HStack>
@@ -145,16 +159,29 @@ export function SharedChartPage() {
                         colorScheme="teal"
                         isDisabled={isAuthLoading}
                         isLoading={isVerifyingEditor}
+                        leftIcon={<AppIcon name="edit" />}
                         loadingText="確認中"
                         onClick={() => void handleStartEditing()}
                       >
                         編集する
                       </Button>
-                    ) : null}
+                    ) : (
+                      <ChartImageDownloadButton
+                        cells={detail.cells}
+                        chart={detail.chart}
+                        editors={editors}
+                        isDisabled={isLoadingEditors || Boolean(editorsError)}
+                      />
+                    )}
                   </HStack>
                   <Text color="gray.500" fontSize="sm" mt={1}>
                     ID: {detail.chart.id}
                   </Text>
+                  {editorsError ? (
+                    <Text color="red.600" fontSize="sm" mt={2}>
+                      画像に含める編集者一覧を取得できませんでした。
+                    </Text>
+                  ) : null}
                 </Box>
 
                 <MandalaChartGrid

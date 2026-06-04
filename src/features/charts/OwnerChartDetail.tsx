@@ -13,7 +13,9 @@ import {
 } from "@chakra-ui/react";
 
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
-import { ShareLinkPanel } from "../share/ShareLinkPanel";
+import { AppIcon } from "../../components/ui/AppIcon";
+import { ChartImageDownloadButton } from "../export/ChartImageDownloadButton";
+import { useChartEditors } from "../editors/useChartEditors";
 import { ChartTitleEditor } from "./ChartTitleEditor";
 import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
@@ -21,15 +23,22 @@ type OwnerChartDetailProps = {
   chartId: string | null;
   currentUserUid: string | undefined;
   onClose: () => void;
+  onOpenShare: () => void;
 };
 
 export function OwnerChartDetail({
   chartId,
   currentUserUid,
   onClose,
+  onOpenShare,
 }: OwnerChartDetailProps) {
-  const { detail, error, isLoading, setCellBody, setChartTitle, setInviteToken } =
+  const { detail, error, isLoading, setCellBody, setChartTitle } =
     useOwnerChartDetail(chartId);
+  const {
+    editors,
+    error: editorsError,
+    isLoading: isLoadingEditors,
+  } = useChartEditors(chartId);
 
   if (!chartId) {
     return null;
@@ -37,23 +46,36 @@ export function OwnerChartDetail({
 
   return (
     <Box
-      bg="white"
+      bg="linen.50"
       border="1px solid"
-      borderColor="gray.200"
-      borderRadius="md"
+      borderColor="linen.300"
+      borderRadius="lg"
+      boxShadow="card"
       p={{ base: 5, md: 8 }}
     >
       <VStack align="stretch" spacing={4}>
         <HStack justify="space-between" align="center">
-          <Heading size="md">チャート詳細</Heading>
-          <Button size="sm" variant="outline" onClick={onClose}>
-            閉じる
-          </Button>
+          <Heading size="md" color="ink.900">
+            チャート詳細
+          </Heading>
+          <HStack>
+            <Button leftIcon={<AppIcon name="share" />} size="sm" onClick={onOpenShare}>
+              共有設定
+            </Button>
+            <Button
+              leftIcon={<AppIcon name="arrowLeft" />}
+              size="sm"
+              variant="outline"
+              onClick={onClose}
+            >
+              一覧へ戻る
+            </Button>
+          </HStack>
         </HStack>
 
         {isLoading ? (
-          <HStack color="gray.600">
-            <Spinner size="sm" />
+          <HStack color="ink.500">
+            <Spinner size="sm" color="brand.500" />
             <Text>チャート詳細を読み込んでいます。</Text>
           </HStack>
         ) : error ? (
@@ -65,22 +87,32 @@ export function OwnerChartDetail({
           <VStack align="stretch" spacing={4}>
             <Box>
               <HStack spacing={3} align="center">
-                <Heading size="lg">{detail.chart.title}</Heading>
-                <Badge colorScheme="teal">{detail.cells.length}セル</Badge>
+                <Heading size="lg" color="ink.900">
+                  {detail.chart.title}
+                </Heading>
+                <Badge colorScheme="brand">{detail.cells.length}セル</Badge>
               </HStack>
-              <Text color="gray.500" fontSize="sm" mt={1}>
+              <Text color="ink.500" fontSize="sm" mt={1}>
                 ID: {detail.chart.id}
               </Text>
+              {editorsError ? (
+                <Text color="red.600" fontSize="sm" mt={2}>
+                  画像に含める編集者一覧を取得できませんでした。
+                </Text>
+              ) : null}
             </Box>
+            <HStack>
+              <ChartImageDownloadButton
+                cells={detail.cells}
+                chart={detail.chart}
+                editors={editors}
+                isDisabled={isLoadingEditors || Boolean(editorsError)}
+              />
+            </HStack>
             <ChartTitleEditor
               chartId={detail.chart.id}
               title={detail.chart.title}
               onSaved={setChartTitle}
-            />
-            <ShareLinkPanel
-              chartId={detail.chart.id}
-              inviteToken={detail.chart.inviteToken}
-              onInviteTokenIssued={setInviteToken}
             />
 
             {currentUserUid ? (

@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import { addEditor } from "./addEditor";
 import { removeEditor } from "./removeEditor";
 import { useChartEditors } from "./useChartEditors";
@@ -90,11 +91,13 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
   };
 
   return (
-    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
+    <Box border="1px solid" borderColor="linen.300" borderRadius="lg" bg="linen.50" p={4}>
       <VStack align="stretch" spacing={3}>
         <HStack justify="space-between" align="center">
-          <Text fontWeight="semibold">編集者</Text>
-          <Badge colorScheme="teal">{editors.length}/10</Badge>
+          <Text fontWeight="bold" color="ink.900">
+            編集者
+          </Text>
+          <Badge colorScheme="brand">{editors.length}/10</Badge>
         </HStack>
 
         <FormControl isDisabled={isAdding || editors.length >= 10}>
@@ -107,10 +110,10 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
               onChange={(event) => setEmail(event.target.value)}
             />
             <Button
-              colorScheme="teal"
               flexShrink={0}
               isDisabled={email.trim().length === 0}
               isLoading={isAdding}
+              leftIcon={<AppIcon name="plus" />}
               loadingText="追加中"
               onClick={() => void handleAddEditor()}
             >
@@ -148,8 +151,8 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
         ) : null}
 
         {isLoading ? (
-          <HStack color="gray.600">
-            <Spinner size="sm" />
+          <HStack color="ink.500">
+            <Spinner size="sm" color="brand.500" />
             <Text fontSize="sm">編集者一覧を読み込んでいます。</Text>
           </HStack>
         ) : error ? (
@@ -158,7 +161,7 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : editors.length === 0 ? (
-          <Text color="gray.600" fontSize="sm">
+          <Text color="ink.500" fontSize="sm">
             まだ編集者は追加されていません。
           </Text>
         ) : (
@@ -167,8 +170,9 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
               <Box
                 key={editor.id}
                 border="1px solid"
-                borderColor="gray.100"
-                borderRadius="md"
+                borderColor="linen.300"
+                borderRadius="lg"
+                bg="white"
                 p={3}
               >
                 <HStack justify="space-between" align="start" spacing={3}>
@@ -176,7 +180,7 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
                     <Text fontSize="sm" fontWeight="semibold" wordBreak="break-all">
                       {editor.allowedEmail}
                     </Text>
-                    <Text color="gray.500" fontSize="xs" mt={1}>
+                    <Text color="ink.500" fontSize="xs" mt={1}>
                       追加日時: {formatCreatedAt(editor.createdAt?.seconds)}
                     </Text>
                   </Box>
@@ -184,6 +188,7 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
                     colorScheme="red"
                     flexShrink={0}
                     isLoading={removingEditorId === editor.id}
+                    leftIcon={<AppIcon name="trash" />}
                     loadingText="削除中"
                     size="sm"
                     variant="outline"

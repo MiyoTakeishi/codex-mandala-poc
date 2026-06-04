@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import { updateChartTitle } from "./updateChartTitle";
 
 type ChartTitleEditorProps = {
@@ -73,8 +74,8 @@ export function ChartTitleEditor({
             }}
           />
           <Button
-            colorScheme="teal"
             isLoading={isSaving}
+            leftIcon={<AppIcon name="save" />}
             loadingText="保存中"
             onClick={handleSave}
           >
@@ -84,7 +85,7 @@ export function ChartTitleEditor({
         <FormErrorMessage>{error}</FormErrorMessage>
       </FormControl>
       {savedMessage ? (
-        <Text color="teal.700" fontSize="sm">
+        <Text color="brand.700" fontSize="sm" fontWeight="semibold">
           {savedMessage}
         </Text>
       ) : null}

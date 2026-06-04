@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import { EditorListPanel } from "../editors/EditorListPanel";
 import { createInviteLink } from "./createInviteLink";
 
@@ -76,11 +77,13 @@ export function ShareLinkPanel({
   };
 
   return (
-    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4}>
+    <Box border="1px solid" borderColor="linen.300" borderRadius="lg" bg="white" p={4}>
       <VStack align="stretch" spacing={3}>
         <HStack justify="space-between" align="center">
-          <Text fontWeight="semibold">招待リンク</Text>
-          <Badge colorScheme={inviteToken ? "green" : "gray"}>
+          <Text fontWeight="bold" color="ink.900">
+            招待リンク
+          </Text>
+          <Badge colorScheme={inviteToken ? "brand" : "gray"}>
             {inviteToken ? "発行済み" : "未発行"}
           </Badge>
         </HStack>
@@ -91,8 +94,8 @@ export function ShareLinkPanel({
             <HStack align="start">
               <Input value={shareUrl} isReadOnly fontSize="sm" />
               <Button
-                colorScheme="teal"
                 flexShrink={0}
+                leftIcon={<AppIcon name="copy" />}
                 onClick={() => void handleCopyShareUrl()}
               >
                 コピー
@@ -100,7 +103,7 @@ export function ShareLinkPanel({
             </HStack>
           </FormControl>
         ) : (
-          <Text color="gray.600" fontSize="sm">
+          <Text color="ink.500" fontSize="sm">
             招待リンクを発行すると、リンクを知っているユーザーがゲストとして閲覧できます。
           </Text>
         )}
@@ -108,8 +111,8 @@ export function ShareLinkPanel({
         {!inviteToken ? (
           <Button
             alignSelf="start"
-            colorScheme="teal"
             isLoading={isIssuing}
+            leftIcon={<AppIcon name="share" />}
             loadingText="発行中"
             onClick={handleIssueInviteLink}
           >
