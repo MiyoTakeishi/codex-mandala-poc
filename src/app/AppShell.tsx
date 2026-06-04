@@ -9,7 +9,7 @@ import {
   VStack,
   type ContainerProps,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 
 import { ServiceLogo } from "../components/brand/ServiceLogo";
@@ -23,6 +23,8 @@ type AppShellProps = {
 
 export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
   const { currentUser, isAuthLoading, logout } = useAuth();
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
 
   return (
     <Box
@@ -53,15 +55,17 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
               order={{ base: 3, md: 2 }}
               w={{ base: "100%", md: "auto" }}
             >
-              <Button
-                as={RouterLink}
-                leftIcon={<AppIcon name="edit" />}
-                size="sm"
-                to="/charts"
-                variant="ghost"
-              >
-                チャート
-              </Button>
+              {currentUser ? (
+                <Button
+                  as={RouterLink}
+                  leftIcon={<AppIcon name="edit" />}
+                  size="sm"
+                  to="/charts"
+                  variant="ghost"
+                >
+                  チャート
+                </Button>
+              ) : null}
               <Button
                 as={RouterLink}
                 leftIcon={<AppIcon name="bookOpen" />}
@@ -99,7 +103,7 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
                   ログアウト
                 </Button>
               </HStack>
-            ) : (
+            ) : isLoginPage ? null : (
               <Button as={RouterLink} leftIcon={<AppIcon name="logIn" />} to="/login">
                 Googleでログイン
               </Button>
