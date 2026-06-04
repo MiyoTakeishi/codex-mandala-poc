@@ -68,6 +68,8 @@ Phase 0ではFirebaseコンソール上の設定は実施しない。以下を�
 必要なデータ:
 
 - Firebase Hostingサイト名
+- FirebaseプロジェクトID
+- Firebase Hostingの公開URL
 
 手順:
 
@@ -75,7 +77,68 @@ Phase 0ではFirebaseコンソール上の設定は実施しない。以下を�
 2. SPAルーティングは `firebase.json` のrewritesで `index.html` に向ける。
 3. デプロイ時は `npm run build` 後に `firebase deploy --only hosting` を実行する。
 
-## 6. Emulator Suite
+現在のリポジトリ設定:
+
+- FirebaseプロジェクトID: `bpapp-354eb`
+- Firebase Hosting site: `codex-mandala-poc`
+- 公開ディレクトリ: `dist`
+
+## 6. MVP Hostingデプロイ前チェック
+
+デプロイ前に、ローカルで以下を確認する。
+
+```bash
+npm run build
+npm run test:rules
+npm run test:e2e
+npm --prefix functions run build
+```
+
+補足:
+
+- `npm run test:e2e` の初回実行前、または別PCで初めて実行する場合は `npm run test:e2e:install` を実行する。
+- `npm run lint` は、現時点ではESLint設定ファイルが未作成のため実行対象外とする。
+- `test:rules` と `test:e2e` はFirebase Emulatorを使うため、本番Firestoreのデータは変更しない。
+
+## 7. MVP Hostingデプロイ手順
+
+必要なデータ:
+
+- Firebase CLIで `bpapp-354eb` にログイン済みであること。
+- `.env.local` に本番Firebase Webアプリ設定が入っていること。
+- Firebase Hostingサイト `codex-mandala-poc` が有効化済みであること。
+- Firebase Authenticationの承認済みドメインにHostingドメインが含まれていること。
+
+手順:
+
+1. デプロイ対象ブランチが最新であることを確認する。
+2. `npm run build` を実行する。
+3. 必要に応じてFirestore RulesとIndexesを反映する。
+
+```bash
+npx firebase deploy --only firestore:rules
+npx firebase deploy --only firestore:indexes
+```
+
+4. Hostingへデプロイする。
+
+```bash
+npx firebase deploy --only hosting
+```
+
+5. デプロイ後、Firebase CLIに表示されたHosting URLを開いて動作確認する。
+
+デプロイ後に確認すること:
+
+- Googleログインできる。
+- 作成者がチャート一覧を表示できる。
+- チャート詳細を開ける。
+- タイトルとセルを保存できる。
+- 招待リンクを発行し、ゲスト閲覧できる。
+- 許可済み編集者が招待リンクから編集できる。
+- チャート削除後、一覧と招待リンクから閲覧できない。
+
+## 8. Emulator Suite
 
 ローカル起動:
 
