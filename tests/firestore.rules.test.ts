@@ -226,6 +226,19 @@ describe("cell rules", () => {
     );
   });
 
+  it("allows permitted editors to read editor entries for image export", async () => {
+    await seedChart({
+      chartId: "editable-chart",
+      editorEmail: EDITOR_EMAIL,
+    });
+
+    const db = authedDb(EDITOR_UID, EDITOR_EMAIL);
+
+    await assertSucceeds(
+      getDocs(collection(db, "charts", "editable-chart", "editors")),
+    );
+  });
+
   it("rejects cell updates from users without edit access", async () => {
     await seedChart({ chartId: "locked-chart" });
 

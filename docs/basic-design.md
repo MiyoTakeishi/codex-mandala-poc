@@ -232,7 +232,7 @@ MVPでは、以下はCallable Functionsとして実装する。
 | 招待リンク発行 | 可 | 不可 | 不可 | 不可 |
 | 編集者追加 | 可 | 不可 | 不可 | 不可 |
 | 編集者削除 | 可 | 不可 | 不可 | 不可 |
-| 画像出力 | 不可 | 不可 | 不可 | 不可 |
+| 画像出力 | 可 | 可 | 不可 | 不可 |
 | PDF出力 | 不可 | 不可 | 不可 | 不可 |
 
 ### 6.3 ルール概要
@@ -250,7 +250,8 @@ charts/{chartId}/cells/{cellId}
   update: 作成者または編集者
 
 charts/{chartId}/editors/{editorId}
-  read/write: 原則クライアント直接書き込み不可。Cloud Functions経由。
+  read: 作成者または編集者
+  write: 原則クライアント直接書き込み不可。Cloud Functions経由。
 
 inviteLinks/{token}
   read: 全員

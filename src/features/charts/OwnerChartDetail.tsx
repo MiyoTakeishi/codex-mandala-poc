@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
+import { ChartImageDownloadButton } from "../export/ChartImageDownloadButton";
+import { useChartEditors } from "../editors/useChartEditors";
 import { ChartTitleEditor } from "./ChartTitleEditor";
 import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
@@ -31,6 +33,11 @@ export function OwnerChartDetail({
 }: OwnerChartDetailProps) {
   const { detail, error, isLoading, setCellBody, setChartTitle } =
     useOwnerChartDetail(chartId);
+  const {
+    editors,
+    error: editorsError,
+    isLoading: isLoadingEditors,
+  } = useChartEditors(chartId);
 
   if (!chartId) {
     return null;
@@ -82,7 +89,20 @@ export function OwnerChartDetail({
               <Text color="ink.500" fontSize="sm" mt={1}>
                 ID: {detail.chart.id}
               </Text>
+              {editorsError ? (
+                <Text color="red.600" fontSize="sm" mt={2}>
+                  画像に含める編集者一覧を取得できませんでした。
+                </Text>
+              ) : null}
             </Box>
+            <HStack>
+              <ChartImageDownloadButton
+                cells={detail.cells}
+                chart={detail.chart}
+                editors={editors}
+                isDisabled={isLoadingEditors || Boolean(editorsError)}
+              />
+            </HStack>
             <ChartTitleEditor
               chartId={detail.chart.id}
               title={detail.chart.title}

@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Container,
-  Heading,
   HStack,
   Spinner,
   Text,
@@ -13,6 +12,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import type { ReactNode } from "react";
 
+import { ServiceLogo } from "../components/brand/ServiceLogo";
 import { useAuth } from "../features/auth/AuthProvider";
 
 type AppShellProps = {
@@ -46,15 +46,7 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
             px={{ base: 4, md: 5 }}
             py={3}
           >
-            <Heading
-              as={RouterLink}
-              to="/charts"
-              color="ink.900"
-              fontSize={{ base: "lg", md: "xl" }}
-              letterSpacing="0"
-            >
-              マンダラチャート
-            </Heading>
+            <ServiceLogo />
             <HStack
               spacing={2}
               order={{ base: 3, md: 2 }}
