@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
-import { ShareLinkPanel } from "../share/ShareLinkPanel";
 import { ChartTitleEditor } from "./ChartTitleEditor";
 import { useOwnerChartDetail } from "./useOwnerChartDetail";
 
@@ -21,14 +20,16 @@ type OwnerChartDetailProps = {
   chartId: string | null;
   currentUserUid: string | undefined;
   onClose: () => void;
+  onOpenShare: () => void;
 };
 
 export function OwnerChartDetail({
   chartId,
   currentUserUid,
   onClose,
+  onOpenShare,
 }: OwnerChartDetailProps) {
-  const { detail, error, isLoading, setCellBody, setChartTitle, setInviteToken } =
+  const { detail, error, isLoading, setCellBody, setChartTitle } =
     useOwnerChartDetail(chartId);
 
   if (!chartId) {
@@ -46,9 +47,14 @@ export function OwnerChartDetail({
       <VStack align="stretch" spacing={4}>
         <HStack justify="space-between" align="center">
           <Heading size="md">チャート詳細</Heading>
-          <Button size="sm" variant="outline" onClick={onClose}>
-            閉じる
-          </Button>
+          <HStack>
+            <Button size="sm" colorScheme="teal" onClick={onOpenShare}>
+              共有設定
+            </Button>
+            <Button size="sm" variant="outline" onClick={onClose}>
+              一覧へ戻る
+            </Button>
+          </HStack>
         </HStack>
 
         {isLoading ? (
@@ -76,11 +82,6 @@ export function OwnerChartDetail({
               chartId={detail.chart.id}
               title={detail.chart.title}
               onSaved={setChartTitle}
-            />
-            <ShareLinkPanel
-              chartId={detail.chart.id}
-              inviteToken={detail.chart.inviteToken}
-              onInviteTokenIssued={setInviteToken}
             />
 
             {currentUserUid ? (

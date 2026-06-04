@@ -18,7 +18,7 @@ import { useOwnerCharts } from "./useOwnerCharts";
 
 type OwnerChartListProps = {
   ownerUid: string | undefined;
-  selectedChartId: string | null;
+  selectedChartId?: string | null;
   onOpenChart: (chartId: string) => void;
   onDeletedChart: (chartId: string) => void;
 };
