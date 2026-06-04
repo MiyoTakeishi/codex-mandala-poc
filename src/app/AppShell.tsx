@@ -13,6 +13,7 @@ import { Link as RouterLink } from "react-router-dom";
 import type { ReactNode } from "react";
 
 import { ServiceLogo } from "../components/brand/ServiceLogo";
+import { AppIcon } from "../components/ui/AppIcon";
 import { useAuth } from "../features/auth/AuthProvider";
 
 type AppShellProps = {
@@ -52,10 +53,22 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
               order={{ base: 3, md: 2 }}
               w={{ base: "100%", md: "auto" }}
             >
-              <Button as={RouterLink} to="/charts" size="sm" variant="ghost">
+              <Button
+                as={RouterLink}
+                leftIcon={<AppIcon name="edit" />}
+                size="sm"
+                to="/charts"
+                variant="ghost"
+              >
                 チャート
               </Button>
-              <Button as={RouterLink} to="/guide" size="sm" variant="ghost">
+              <Button
+                as={RouterLink}
+                leftIcon={<AppIcon name="bookOpen" />}
+                size="sm"
+                to="/guide"
+                variant="ghost"
+              >
                 使い方
               </Button>
             </HStack>
@@ -78,12 +91,16 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
                     {currentUser.email}
                   </Text>
                 </Box>
-                <Button variant="outline" onClick={() => void logout()}>
+                <Button
+                  leftIcon={<AppIcon name="logOut" />}
+                  variant="outline"
+                  onClick={() => void logout()}
+                >
                   ログアウト
                 </Button>
               </HStack>
             ) : (
-              <Button as={RouterLink} to="/login">
+              <Button as={RouterLink} leftIcon={<AppIcon name="logIn" />} to="/login">
                 Googleでログイン
               </Button>
             )}

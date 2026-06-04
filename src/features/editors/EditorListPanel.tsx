@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import { addEditor } from "./addEditor";
 import { removeEditor } from "./removeEditor";
 import { useChartEditors } from "./useChartEditors";
@@ -112,6 +113,7 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
               flexShrink={0}
               isDisabled={email.trim().length === 0}
               isLoading={isAdding}
+              leftIcon={<AppIcon name="plus" />}
               loadingText="追加中"
               onClick={() => void handleAddEditor()}
             >
@@ -186,6 +188,7 @@ export function EditorListPanel({ chartId }: EditorListPanelProps) {
                     colorScheme="red"
                     flexShrink={0}
                     isLoading={removingEditorId === editor.id}
+                    leftIcon={<AppIcon name="trash" />}
                     loadingText="削除中"
                     size="sm"
                     variant="outline"

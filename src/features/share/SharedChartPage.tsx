@@ -17,6 +17,7 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 
 import { ServiceLogo } from "../../components/brand/ServiceLogo";
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useAuth } from "../auth/AuthProvider";
 import { useChartEditors } from "../editors/useChartEditors";
 import { ChartImageDownloadButton } from "../export/ChartImageDownloadButton";
@@ -87,7 +88,12 @@ export function SharedChartPage() {
         <VStack align="stretch" spacing={6}>
           <HStack justify="space-between" align="center">
             <ServiceLogo />
-            <Button as={RouterLink} to="/" variant="outline">
+            <Button
+              as={RouterLink}
+              leftIcon={<AppIcon name="home" />}
+              to="/"
+              variant="outline"
+            >
               ホームへ
             </Button>
           </HStack>
@@ -153,6 +159,7 @@ export function SharedChartPage() {
                         colorScheme="teal"
                         isDisabled={isAuthLoading}
                         isLoading={isVerifyingEditor}
+                        leftIcon={<AppIcon name="edit" />}
                         loadingText="確認中"
                         onClick={() => void handleStartEditing()}
                       >

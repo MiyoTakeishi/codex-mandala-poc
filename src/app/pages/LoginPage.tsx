@@ -12,6 +12,7 @@ import {
 import { Navigate, useLocation } from "react-router-dom";
 
 import { AppShell } from "../AppShell";
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useAuth } from "../../features/auth/AuthProvider";
 
 type LocationState = {
@@ -79,7 +80,7 @@ export function LoginPage() {
             </Alert>
           ) : null}
 
-          <Button onClick={() => void signInWithGoogle()}>
+          <Button leftIcon={<AppIcon name="logIn" />} onClick={() => void signInWithGoogle()}>
             Googleでログイン
           </Button>
         </VStack>

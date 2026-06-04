@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { MandalaChartGrid } from "../../components/chart/MandalaChartGrid";
+import { AppIcon } from "../../components/ui/AppIcon";
 import { ChartImageDownloadButton } from "../export/ChartImageDownloadButton";
 import { useChartEditors } from "../editors/useChartEditors";
 import { ChartTitleEditor } from "./ChartTitleEditor";
@@ -58,10 +59,15 @@ export function OwnerChartDetail({
             チャート詳細
           </Heading>
           <HStack>
-            <Button size="sm" onClick={onOpenShare}>
+            <Button leftIcon={<AppIcon name="share" />} size="sm" onClick={onOpenShare}>
               共有設定
             </Button>
-            <Button size="sm" variant="outline" onClick={onClose}>
+            <Button
+              leftIcon={<AppIcon name="arrowLeft" />}
+              size="sm"
+              variant="outline"
+              onClick={onClose}
+            >
               一覧へ戻る
             </Button>
           </HStack>

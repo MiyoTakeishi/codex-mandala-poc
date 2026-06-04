@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import type {
   CellDocument,
   ChartDocument,
@@ -37,6 +38,7 @@ export function ChartImageDownloadButton({
     <Button
       isDisabled={isDisabled}
       isLoading={isGenerating}
+      leftIcon={<AppIcon name="download" />}
       loadingText="生成中"
       size="sm"
       variant="outline"

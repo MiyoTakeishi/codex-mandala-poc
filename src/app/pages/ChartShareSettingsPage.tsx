@@ -18,6 +18,7 @@ import {
 } from "react-router-dom";
 
 import { AppShell } from "../AppShell";
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useAuth } from "../../features/auth/AuthProvider";
 import { useOwnerChartDetail } from "../../features/charts/useOwnerChartDetail";
 import { ShareLinkPanel } from "../../features/share/ShareLinkPanel";
@@ -55,7 +56,13 @@ export function ChartShareSettingsPage() {
         <VStack align="stretch" spacing={4}>
           <HStack justify="space-between" align="center">
             <Heading size="md">共有設定</Heading>
-            <Button as={RouterLink} to={`/charts/${chartId}`} size="sm" variant="outline">
+            <Button
+              as={RouterLink}
+              leftIcon={<AppIcon name="arrowLeft" />}
+              size="sm"
+              to={`/charts/${chartId}`}
+              variant="outline"
+            >
               チャートへ戻る
             </Button>
           </HStack>

@@ -2,6 +2,7 @@ import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
 import { AppShell } from "../AppShell";
+import { AppIcon } from "../../components/ui/AppIcon";
 
 export function ErrorPage() {
   return (
@@ -21,7 +22,7 @@ export function ErrorPage() {
           <Text color="ink.500">
             権限がない、削除済み、または存在しないページの可能性があります。
           </Text>
-          <Button as={RouterLink} to="/charts">
+          <Button as={RouterLink} leftIcon={<AppIcon name="arrowLeft" />} to="/charts">
             チャート一覧へ
           </Button>
         </VStack>

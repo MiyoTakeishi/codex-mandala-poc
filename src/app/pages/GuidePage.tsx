@@ -17,6 +17,7 @@ import type { ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import { AppShell } from "../AppShell";
+import { AppIcon } from "../../components/ui/AppIcon";
 
 const centerThemes = [
   "体力",
@@ -283,10 +284,15 @@ export function GuidePage() {
               </Text>
             </Box>
             <HStack flexWrap="wrap" spacing={3}>
-              <Button as={RouterLink} to="/charts">
+              <Button as={RouterLink} leftIcon={<AppIcon name="plus" />} to="/charts">
                 チャートを作成する
               </Button>
-              <Button as={RouterLink} to="/login" variant="outline">
+              <Button
+                as={RouterLink}
+                leftIcon={<AppIcon name="logIn" />}
+                to="/login"
+                variant="outline"
+              >
                 ログインする
               </Button>
             </HStack>

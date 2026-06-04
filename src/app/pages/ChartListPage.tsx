@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { AppShell } from "../AppShell";
+import { AppIcon } from "../../components/ui/AppIcon";
 import { useAuth } from "../../features/auth/AuthProvider";
 import { createChart } from "../../features/charts/createChart";
 import { OwnerChartList } from "../../features/charts/OwnerChartList";
@@ -94,6 +95,7 @@ export function ChartListPage() {
             />
           </FormControl>
           <Button
+            leftIcon={<AppIcon name="plus" />}
             isLoading={isCreatingChart}
             loadingText="作成中"
             onClick={() => void handleCreateChart()}

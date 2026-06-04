@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import { deleteChart } from "./deleteChart";
 import { useOwnerCharts } from "./useOwnerCharts";
 
@@ -148,6 +149,7 @@ export function OwnerChartList({
                   </Box>
                   <HStack flexShrink={0}>
                     <Button
+                      leftIcon={<AppIcon name="externalLink" />}
                       size="sm"
                       variant={selectedChartId === chart.id ? "solid" : "outline"}
                       onClick={() => onOpenChart(chart.id)}
@@ -157,6 +159,7 @@ export function OwnerChartList({
                     <Button
                       colorScheme="red"
                       isLoading={deletingChartId === chart.id}
+                      leftIcon={<AppIcon name="trash" />}
                       loadingText="削除中"
                       size="sm"
                       variant="outline"

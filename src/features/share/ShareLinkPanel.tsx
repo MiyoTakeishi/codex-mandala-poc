@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 
+import { AppIcon } from "../../components/ui/AppIcon";
 import { EditorListPanel } from "../editors/EditorListPanel";
 import { createInviteLink } from "./createInviteLink";
 
@@ -94,6 +95,7 @@ export function ShareLinkPanel({
               <Input value={shareUrl} isReadOnly fontSize="sm" />
               <Button
                 flexShrink={0}
+                leftIcon={<AppIcon name="copy" />}
                 onClick={() => void handleCopyShareUrl()}
               >
                 コピー
@@ -110,6 +112,7 @@ export function ShareLinkPanel({
           <Button
             alignSelf="start"
             isLoading={isIssuing}
+            leftIcon={<AppIcon name="share" />}
             loadingText="発行中"
             onClick={handleIssueInviteLink}
           >
