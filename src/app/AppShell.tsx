@@ -35,79 +35,100 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
     >
       <Container maxW={maxW} py={{ base: 8, md: 12 }}>
         <VStack align="stretch" spacing={8}>
-          <HStack
-            as="header"
-            justify="space-between"
-            align="center"
-            flexWrap="wrap"
-            gap={3}
-            bg="rgba(255, 255, 252, 0.88)"
-            border="1px solid"
-            borderColor="linen.300"
-            borderRadius="lg"
-            boxShadow="card"
-            px={{ base: 4, md: 5 }}
-            py={3}
-          >
-            <ServiceLogo />
+          <HStack align="stretch" flexWrap="wrap" spacing={3}>
             <HStack
-              spacing={2}
-              order={{ base: 3, md: 2 }}
-              w={{ base: "100%", md: "auto" }}
+              as="header"
+              flex={{ base: "1 0 100%", lg: "1 1 0" }}
+              justify="space-between"
+              align="center"
+              flexWrap="wrap"
+              gap={3}
+              bg="rgba(255, 255, 252, 0.88)"
+              border="1px solid"
+              borderColor="linen.300"
+              borderRadius="lg"
+              boxShadow="card"
+              px={{ base: 4, md: 5 }}
+              py={3}
             >
-              {currentUser ? (
+              <ServiceLogo />
+              <HStack
+                spacing={2}
+                order={{ base: 3, md: 2 }}
+                w={{ base: "100%", md: "auto" }}
+              >
+                {currentUser ? (
+                  <Button
+                    as={RouterLink}
+                    leftIcon={<AppIcon name="edit" />}
+                    size="sm"
+                    to="/charts"
+                    variant="ghost"
+                  >
+                    チャート
+                  </Button>
+                ) : null}
                 <Button
                   as={RouterLink}
-                  leftIcon={<AppIcon name="edit" />}
+                  leftIcon={<AppIcon name="bookOpen" />}
                   size="sm"
-                  to="/charts"
+                  to="/guide"
                   variant="ghost"
                 >
-                  チャート
+                  使い方
                 </Button>
-              ) : null}
-              <Button
-                as={RouterLink}
-                leftIcon={<AppIcon name="bookOpen" />}
-                size="sm"
-                to="/guide"
-                variant="ghost"
-              >
-                使い方
-              </Button>
+              </HStack>
+              {isAuthLoading ? (
+                <Spinner color="brand.500" />
+              ) : currentUser || isLoginPage ? null : (
+                <Button as={RouterLink} leftIcon={<AppIcon name="logIn" />} to="/login">
+                  Googleでログイン
+                </Button>
+              )}
             </HStack>
-            {isAuthLoading ? (
-              <Spinner color="brand.500" />
-            ) : currentUser ? (
-              <HStack spacing={3}>
-                <Avatar
-                  name={currentUser.displayName ?? currentUser.email ?? undefined}
-                  src={currentUser.photoURL ?? undefined}
-                  size="sm"
-                  border="2px solid"
-                  borderColor="linen.50"
-                />
-                <Box display={{ base: "none", md: "block" }}>
-                  <Text fontSize="sm" fontWeight="bold" color="ink.900">
-                    {currentUser.displayName ?? "ログイン中"}
-                  </Text>
-                  <Text fontSize="xs" color="ink.500">
-                    {currentUser.email}
-                  </Text>
-                </Box>
+
+            {currentUser ? (
+              <HStack
+                align="center"
+                bg="rgba(255, 255, 252, 0.72)"
+                border="1px solid"
+                borderColor="linen.300"
+                borderRadius="md"
+                justify="space-between"
+                px={4}
+                py={3}
+                spacing={3}
+                w={{ base: "100%", lg: "360px" }}
+              >
+                <HStack minW={0} spacing={3}>
+                  <Avatar
+                    name={currentUser.displayName ?? currentUser.email ?? undefined}
+                    src={currentUser.photoURL ?? undefined}
+                    size="sm"
+                    border="2px solid"
+                    borderColor="linen.50"
+                    flexShrink={0}
+                  />
+                  <Box minW={0}>
+                    <Text fontSize="sm" fontWeight="bold" color="ink.900" noOfLines={1}>
+                      {currentUser.displayName ?? "ログイン中"}
+                    </Text>
+                    <Text color="ink.500" fontSize="xs" noOfLines={1}>
+                      {currentUser.email}
+                    </Text>
+                  </Box>
+                </HStack>
                 <Button
+                  flexShrink={0}
                   leftIcon={<AppIcon name="logOut" />}
+                  size="sm"
                   variant="outline"
                   onClick={() => void logout()}
                 >
                   ログアウト
                 </Button>
               </HStack>
-            ) : isLoginPage ? null : (
-              <Button as={RouterLink} leftIcon={<AppIcon name="logIn" />} to="/login">
-                Googleでログイン
-              </Button>
-            )}
+            ) : null}
           </HStack>
           {children}
         </VStack>
