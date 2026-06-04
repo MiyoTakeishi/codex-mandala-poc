@@ -75,16 +75,19 @@ export function OwnerChartList({
 
   return (
     <Box
-      bg="white"
+      bg="linen.50"
       border="1px solid"
-      borderColor="gray.200"
-      borderRadius="md"
+      borderColor="linen.300"
+      borderRadius="lg"
+      boxShadow="card"
       p={{ base: 5, md: 8 }}
     >
       <VStack align="stretch" spacing={4}>
         <HStack justify="space-between" align="center">
-          <Heading size="md">作成したチャート</Heading>
-          <Badge colorScheme="teal">{charts.length}/5</Badge>
+          <Heading size="md" color="ink.900">
+            作成したチャート
+          </Heading>
+          <Badge colorScheme="brand">{charts.length}/5</Badge>
         </HStack>
 
         {deleteSuccess ? (
@@ -102,10 +105,10 @@ export function OwnerChartList({
         ) : null}
 
         {!ownerUid ? (
-          <Text color="gray.600">ログインすると作成したチャートを確認できます。</Text>
+          <Text color="ink.500">ログインすると作成したチャートを確認できます。</Text>
         ) : isLoading ? (
-          <HStack color="gray.600">
-            <Spinner size="sm" />
+          <HStack color="ink.500">
+            <Spinner size="sm" color="brand.500" />
             <Text>チャート一覧を読み込んでいます。</Text>
           </HStack>
         ) : error ? (
@@ -114,24 +117,32 @@ export function OwnerChartList({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : charts.length === 0 ? (
-          <Text color="gray.600">まだチャートがありません。</Text>
+          <Text color="ink.500">まだチャートがありません。</Text>
         ) : (
           <VStack align="stretch" spacing={3}>
             {charts.map((chart) => (
               <Box
                 key={chart.id}
                 border="1px solid"
-                borderColor="gray.200"
-                borderRadius="md"
+                borderColor="linen.300"
+                borderRadius="lg"
+                bg="white"
                 p={4}
+                transition="border-color 0.15s ease, box-shadow 0.15s ease"
+                _hover={{
+                  borderColor: "brand.200",
+                  boxShadow: "0 8px 22px rgba(24, 33, 31, 0.06)",
+                }}
               >
                 <HStack justify="space-between" align="start" spacing={4}>
                   <Box>
-                    <Heading size="sm">{chart.title}</Heading>
-                    <Text color="gray.600" fontSize="sm" mt={1}>
+                    <Heading size="sm" color="ink.900">
+                      {chart.title}
+                    </Heading>
+                    <Text color="ink.500" fontSize="sm" mt={1}>
                       最終更新: {formatUpdatedAt(chart.updatedAt.seconds)}
                     </Text>
-                    <Text color="gray.500" fontSize="xs" mt={1}>
+                    <Text color="ink.400" fontSize="xs" mt={1}>
                       ID: {chart.id}
                     </Text>
                   </Box>
@@ -139,7 +150,6 @@ export function OwnerChartList({
                     <Button
                       size="sm"
                       variant={selectedChartId === chart.id ? "solid" : "outline"}
-                      colorScheme={selectedChartId === chart.id ? "teal" : undefined}
                       onClick={() => onOpenChart(chart.id)}
                     >
                       開く

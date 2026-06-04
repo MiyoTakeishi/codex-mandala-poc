@@ -33,7 +33,7 @@ export function ChartShareSettingsPage() {
   if (isAuthLoading) {
     return (
       <AppShell>
-        <Spinner color="teal.500" />
+        <Spinner color="brand.500" />
       </AppShell>
     );
   }
@@ -45,10 +45,11 @@ export function ChartShareSettingsPage() {
   return (
     <AppShell>
       <Box
-        bg="white"
+        bg="linen.50"
         border="1px solid"
-        borderColor="gray.200"
-        borderRadius="md"
+        borderColor="linen.300"
+        borderRadius="lg"
+        boxShadow="card"
         p={{ base: 5, md: 8 }}
       >
         <VStack align="stretch" spacing={4}>
@@ -61,8 +62,8 @@ export function ChartShareSettingsPage() {
 
           {isLoading ? (
             <HStack color="gray.600">
-              <Spinner size="sm" />
-              <Text>共有設定を読み込んでいます。</Text>
+              <Spinner size="sm" color="brand.500" />
+              <Text color="ink.500">共有設定を読み込んでいます。</Text>
             </HStack>
           ) : error ? (
             <Alert status="error" borderRadius="md">
@@ -72,8 +73,10 @@ export function ChartShareSettingsPage() {
           ) : detail ? (
             <VStack align="stretch" spacing={4}>
               <Box>
-                <Heading size="lg">{detail.chart.title}</Heading>
-                <Text color="gray.500" fontSize="sm" mt={1}>
+                <Heading size="lg" color="ink.900">
+                  {detail.chart.title}
+                </Heading>
+                <Text color="ink.500" fontSize="sm" mt={1}>
                   ID: {detail.chart.id}
                 </Text>
               </Box>

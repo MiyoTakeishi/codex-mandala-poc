@@ -14,7 +14,7 @@ export function ChartDetailPage() {
   if (isAuthLoading) {
     return (
       <AppShell>
-        <Spinner color="teal.500" />
+        <Spinner color="brand.500" />
       </AppShell>
     );
   }

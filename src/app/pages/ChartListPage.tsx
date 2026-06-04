@@ -32,7 +32,7 @@ export function ChartListPage() {
   if (isAuthLoading) {
     return (
       <AppShell>
-        <Spinner color="teal.500" />
+        <Spinner color="brand.500" />
       </AppShell>
     );
   }
@@ -65,15 +65,23 @@ export function ChartListPage() {
   return (
     <AppShell>
       <Box
-        bg="white"
+        bg="linen.50"
         border="1px solid"
-        borderColor="gray.200"
-        borderRadius="md"
+        borderColor="linen.300"
+        borderRadius="lg"
+        boxShadow="card"
         p={{ base: 5, md: 8 }}
       >
         <VStack align="start" spacing={4}>
-          <Heading size="lg">共有できる9x9チャートを作成する</Heading>
-          <Text color="gray.600">
+          <Box>
+            <Text color="amber.500" fontSize="sm" fontWeight="bold">
+              FOCUS PLANNING
+            </Text>
+            <Heading size="lg" color="ink.900" mt={1}>
+              共有できる9x9チャートを作成する
+            </Heading>
+          </Box>
+          <Text color="ink.500">
             9x9のマンダラチャートを新規作成できます。
           </Text>
           <FormControl maxW="lg" isDisabled={isCreatingChart}>
@@ -86,7 +94,6 @@ export function ChartListPage() {
             />
           </FormControl>
           <Button
-            colorScheme="teal"
             isLoading={isCreatingChart}
             loadingText="作成中"
             onClick={() => void handleCreateChart()}

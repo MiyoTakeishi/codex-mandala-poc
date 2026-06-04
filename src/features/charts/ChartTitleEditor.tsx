@@ -73,7 +73,6 @@ export function ChartTitleEditor({
             }}
           />
           <Button
-            colorScheme="teal"
             isLoading={isSaving}
             loadingText="保存中"
             onClick={handleSave}
@@ -84,7 +83,7 @@ export function ChartTitleEditor({
         <FormErrorMessage>{error}</FormErrorMessage>
       </FormControl>
       {savedMessage ? (
-        <Text color="teal.700" fontSize="sm">
+        <Text color="brand.700" fontSize="sm" fontWeight="semibold">
           {savedMessage}
         </Text>
       ) : null}

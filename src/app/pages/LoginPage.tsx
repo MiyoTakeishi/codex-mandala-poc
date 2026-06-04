@@ -35,8 +35,8 @@ export function LoginPage() {
   if (isAuthLoading) {
     return (
       <AppShell maxW="lg">
-        <Box bg="white" border="1px solid" borderColor="gray.200" p={8}>
-          <Spinner color="teal.500" />
+        <Box bg="linen.50" border="1px solid" borderColor="linen.300" p={8}>
+          <Spinner color="brand.500" />
         </Box>
       </AppShell>
     );
@@ -48,11 +48,23 @@ export function LoginPage() {
 
   return (
     <AppShell maxW="lg">
-      <Box bg="white" border="1px solid" borderColor="gray.200" p={8}>
+      <Box
+        bg="linen.50"
+        border="1px solid"
+        borderColor="linen.300"
+        borderRadius="lg"
+        boxShadow="card"
+        p={8}
+      >
         <VStack align="stretch" spacing={5}>
           <Box>
-            <Heading size="lg">ログイン</Heading>
-            <Text color="gray.600" mt={2}>
+            <Text color="amber.500" fontSize="sm" fontWeight="bold">
+              SIGN IN
+            </Text>
+            <Heading size="lg" color="ink.900" mt={1}>
+              ログイン
+            </Heading>
+            <Text color="ink.500" mt={2}>
               Googleアカウントでログインしてください。
             </Text>
           </Box>
@@ -67,7 +79,7 @@ export function LoginPage() {
             </Alert>
           ) : null}
 
-          <Button colorScheme="teal" onClick={() => void signInWithGoogle()}>
+          <Button onClick={() => void signInWithGoogle()}>
             Googleでログイン
           </Button>
         </VStack>

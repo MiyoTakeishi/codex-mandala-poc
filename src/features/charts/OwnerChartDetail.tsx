@@ -38,17 +38,20 @@ export function OwnerChartDetail({
 
   return (
     <Box
-      bg="white"
+      bg="linen.50"
       border="1px solid"
-      borderColor="gray.200"
-      borderRadius="md"
+      borderColor="linen.300"
+      borderRadius="lg"
+      boxShadow="card"
       p={{ base: 5, md: 8 }}
     >
       <VStack align="stretch" spacing={4}>
         <HStack justify="space-between" align="center">
-          <Heading size="md">チャート詳細</Heading>
+          <Heading size="md" color="ink.900">
+            チャート詳細
+          </Heading>
           <HStack>
-            <Button size="sm" colorScheme="teal" onClick={onOpenShare}>
+            <Button size="sm" onClick={onOpenShare}>
               共有設定
             </Button>
             <Button size="sm" variant="outline" onClick={onClose}>
@@ -58,8 +61,8 @@ export function OwnerChartDetail({
         </HStack>
 
         {isLoading ? (
-          <HStack color="gray.600">
-            <Spinner size="sm" />
+          <HStack color="ink.500">
+            <Spinner size="sm" color="brand.500" />
             <Text>チャート詳細を読み込んでいます。</Text>
           </HStack>
         ) : error ? (
@@ -71,10 +74,12 @@ export function OwnerChartDetail({
           <VStack align="stretch" spacing={4}>
             <Box>
               <HStack spacing={3} align="center">
-                <Heading size="lg">{detail.chart.title}</Heading>
-                <Badge colorScheme="teal">{detail.cells.length}セル</Badge>
+                <Heading size="lg" color="ink.900">
+                  {detail.chart.title}
+                </Heading>
+                <Badge colorScheme="brand">{detail.cells.length}セル</Badge>
               </HStack>
-              <Text color="gray.500" fontSize="sm" mt={1}>
+              <Text color="ink.500" fontSize="sm" mt={1}>
                 ID: {detail.chart.id}
               </Text>
             </Box>

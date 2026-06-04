@@ -6,13 +6,22 @@ import { AppShell } from "../AppShell";
 export function ErrorPage() {
   return (
     <AppShell maxW="lg">
-      <Box bg="white" border="1px solid" borderColor="gray.200" p={8}>
+      <Box
+        bg="linen.50"
+        border="1px solid"
+        borderColor="linen.300"
+        borderRadius="lg"
+        boxShadow="card"
+        p={8}
+      >
         <VStack align="stretch" spacing={4}>
-          <Heading size="lg">ページを表示できません</Heading>
-          <Text color="gray.600">
+          <Heading size="lg" color="ink.900">
+            ページを表示できません
+          </Heading>
+          <Text color="ink.500">
             権限がない、削除済み、または存在しないページの可能性があります。
           </Text>
-          <Button as={RouterLink} to="/charts" colorScheme="teal">
+          <Button as={RouterLink} to="/charts">
             チャート一覧へ
           </Button>
         </VStack>

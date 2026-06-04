@@ -24,27 +24,51 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
   const { currentUser, isAuthLoading, logout } = useAuth();
 
   return (
-    <Box minH="100vh" bg="gray.50" color="gray.900">
+    <Box
+      minH="100vh"
+      bg="linen.100"
+      color="ink.900"
+      backgroundImage="linear-gradient(180deg, rgba(255, 255, 252, 0.96) 0%, rgba(247, 247, 244, 0.98) 48%, rgba(241, 241, 236, 1) 100%)"
+    >
       <Container maxW={maxW} py={{ base: 8, md: 12 }}>
         <VStack align="stretch" spacing={8}>
-          <HStack justify="space-between" align="center">
-            <Heading as={RouterLink} to="/charts" size="md">
+          <HStack
+            as="header"
+            justify="space-between"
+            align="center"
+            bg="rgba(255, 255, 252, 0.88)"
+            border="1px solid"
+            borderColor="linen.300"
+            borderRadius="lg"
+            boxShadow="card"
+            px={{ base: 4, md: 5 }}
+            py={3}
+          >
+            <Heading
+              as={RouterLink}
+              to="/charts"
+              color="ink.900"
+              fontSize={{ base: "lg", md: "xl" }}
+              letterSpacing="0"
+            >
               マンダラチャート
             </Heading>
             {isAuthLoading ? (
-              <Spinner color="teal.500" />
+              <Spinner color="brand.500" />
             ) : currentUser ? (
               <HStack spacing={3}>
                 <Avatar
                   name={currentUser.displayName ?? currentUser.email ?? undefined}
                   src={currentUser.photoURL ?? undefined}
                   size="sm"
+                  border="2px solid"
+                  borderColor="linen.50"
                 />
                 <Box display={{ base: "none", md: "block" }}>
-                  <Text fontSize="sm" fontWeight="semibold">
+                  <Text fontSize="sm" fontWeight="bold" color="ink.900">
                     {currentUser.displayName ?? "ログイン中"}
                   </Text>
-                  <Text fontSize="xs" color="gray.600">
+                  <Text fontSize="xs" color="ink.500">
                     {currentUser.email}
                   </Text>
                 </Box>
@@ -53,7 +77,7 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
                 </Button>
               </HStack>
             ) : (
-              <Button as={RouterLink} to="/login" colorScheme="teal">
+              <Button as={RouterLink} to="/login">
                 Googleでログイン
               </Button>
             )}
