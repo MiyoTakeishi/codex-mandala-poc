@@ -36,6 +36,8 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
             as="header"
             justify="space-between"
             align="center"
+            flexWrap="wrap"
+            gap={3}
             bg="rgba(255, 255, 252, 0.88)"
             border="1px solid"
             borderColor="linen.300"
@@ -53,6 +55,18 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
             >
               マンダラチャート
             </Heading>
+            <HStack
+              spacing={2}
+              order={{ base: 3, md: 2 }}
+              w={{ base: "100%", md: "auto" }}
+            >
+              <Button as={RouterLink} to="/charts" size="sm" variant="ghost">
+                チャート
+              </Button>
+              <Button as={RouterLink} to="/guide" size="sm" variant="ghost">
+                使い方
+              </Button>
+            </HStack>
             {isAuthLoading ? (
               <Spinner color="brand.500" />
             ) : currentUser ? (

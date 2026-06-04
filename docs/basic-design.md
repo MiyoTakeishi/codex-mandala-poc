@@ -51,6 +51,7 @@ flowchart LR
 | S04 | 招待リンク閲覧画面 | `/share/:token` | ゲスト閲覧者、編集者 | 招待リンクから開く画面。初期状態はゲスト閲覧。編集操作時にログイン・権限確認を行う。 |
 | S05 | チャート共有設定画面 | `/charts/:chartId/share` | チャート作成者 | 招待リンク発行・コピー、編集許可メールアドレスの追加・削除を行う。 |
 | S06 | エラー画面 | `/error` または各画面内表示 | 全ユーザー | 権限なし、削除済み、存在しないチャート、ログイン失敗などを表示する。 |
+| S07 | 使い方ガイド画面 | `/guide` | 全ユーザー | マンダラチャートの概要、使い方、チュートリアル、Q&Aを表示する。 |
 
 ## 3. 画面遷移図
 
@@ -63,6 +64,7 @@ flowchart TD
   Share[S05 チャート共有設定画面]
   PublicChart[S04 招待リンク閲覧画面]
   Error[S06 エラー画面]
+  Guide[S07 使い方ガイド画面]
 
   Start -->|未ログインで認証必須画面| Login
   Login -->|Googleログイン成功| List
@@ -75,8 +77,11 @@ flowchart TD
   OwnerChart -->|共有設定| Share
   OwnerChart -->|一覧へ戻る| List
   Share -->|チャートへ戻る| OwnerChart
+  List -->|使い方確認| Guide
+  OwnerChart -->|使い方確認| Guide
 
   Start -->|招待リンク /share/:token| PublicChart
+  Start -->|使い方 /guide| Guide
   PublicChart -->|編集操作・未ログイン| Login
   Login -->|招待リンク復帰| PublicChart
   PublicChart -->|編集権限あり| PublicChart
@@ -304,4 +309,3 @@ sequenceDiagram
   App-->>Editor: 保存エラー表示
   App-->>Editor: ゲスト閲覧状態へ戻す
 ```
-
