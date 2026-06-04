@@ -78,13 +78,7 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
                   使い方
                 </Button>
               </HStack>
-              {isAuthLoading ? (
-                <Spinner color="brand.500" />
-              ) : currentUser || isLoginPage ? null : (
-                <Button as={RouterLink} leftIcon={<AppIcon name="logIn" />} to="/login">
-                  Googleでログイン
-                </Button>
-              )}
+              {isAuthLoading ? <Spinner color="brand.500" /> : null}
             </HStack>
 
             {currentUser ? (
@@ -128,7 +122,29 @@ export function AppShell({ children, maxW = "6xl" }: AppShellProps) {
                   ログアウト
                 </Button>
               </HStack>
-            ) : null}
+            ) : isAuthLoading || isLoginPage ? null : (
+              <HStack
+                align="center"
+                bg="rgba(255, 255, 252, 0.72)"
+                border="1px solid"
+                borderColor="linen.300"
+                borderRadius="md"
+                justify="center"
+                px={4}
+                py={3}
+                w={{ base: "100%", lg: "260px" }}
+              >
+                <Button
+                  as={RouterLink}
+                  leftIcon={<AppIcon name="logIn" />}
+                  size="sm"
+                  to="/login"
+                  w="100%"
+                >
+                  Googleでログイン
+                </Button>
+              </HStack>
+            )}
           </HStack>
           {children}
         </VStack>
